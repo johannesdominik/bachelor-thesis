@@ -1,0 +1,35 @@
+\documentclass[bachelor,english,smartquotes]{hgbthesis}
+\RequirePackage[utf8]{inputenc}
+\graphicspath{{images/}}
+\logofile{logo}
+\bibliography{references}
+
+\title{Use Cases and Design of Decentralized Financial Web Applications}
+\author{Johannes Hüsers}
+\programtype{Fachhochschul-Bachelorstudiengang}
+\programname{Software Engineering}
+\placeofstudy{Hagenberg}
+\dateofsubmission{2021}{02}{01}
+\advisor{DI Martin Harrer}
+
+\begin{document}
+\frontmatter
+\maketitle
+\tableofcontents
+\include{front/abstract}
+\include{front/kurzfassung}
+
+\mainmatter
+\include{chapters/introduction}
+\include{chapters/defi}
+\include{chapters/usecases}
+\include{chapters/design}
+\include{chapters/closing}
+
+\appendix
+\include{back/appendix_a}	% technical supplements
+\include{back/appendix_b}	% contents of the CD-ROM/DVD
+
+\MakeBibliography
+\include{back/printbox}
+\end{document}
