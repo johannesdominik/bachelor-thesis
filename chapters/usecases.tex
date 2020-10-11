@@ -2,7 +2,22 @@
 \label{cha:UseCasesDecentralizedFinance}
 
 This chapter aims to introduce the five most relevant use cases of Decentralized Finance. Each use case is built on top of the previous one and rises in complexity. For example storing value in digital systems is pretty easy nowadays but moving real physical assets such as gold or real estate is still pretty demanding. Note that each type of financial service is not DeFi specific, which means that they are applicable to every financial environment.
+
+\section{Classification of Financial Services}
+* classify financial services
+
+* extending financial seervices
+* classifiying types of financial institutions (traditional, fintech, ..
+* tabelle
+
+
 \section{Store of Value 1.5 - 3.5}
+No matter of the financial product or service, they all need one essential thing. In fact, our entire economic system depends on it: a currency, or in simpler terms, something to store value. Storing value is one of the three traits besides being exchangeable and having a unit of account each type of money needs to have. The last two characteristics are comparatively easy to accomplish in the online world. Storing value in a digitalized way without having a central trusted authority, however, was a similar challenge to the one the people had to face in the early days when they started to switch from bartering to a real currency. A common consensus needs to be created where everyone can easily verify that a specific piece of money is authentic and wasn't created illegally. Even further, each person that uses this money needs a proof that it is storing real value. This wasn't possible until Satoshi Nakamoto, an anonymous person or group, published a specification \cite{Nakamoto2008} in 2008, on how digital money could be implemented. The first cryptocurrency was founded: bitcoin.
+
+Bitcoin uses a mechanism called proof-of-work in order to give each block that is being added to the blockchain a real value. This utilizes a cost-function which is designed to be easily verifiable but quite expensive to compute \cite{Back2002}. In order to create a new block, a value needs to be found that matches with the correct number of zero bits of the block hash. Once the correct solution has been found, the new block represents real value, because operating this computationally intensive task on a CPU costs a lot of electricity. The integrity of this block is guaranteed as well because in order to change the history of the blockchain, each changed block needs to be re-computed. The longest chain of blocks on the network is accepted as the "truth", so if dishonest people want to cheat and change the history of the blockchain they would need to create the longest chain of blocks which can be only achieved by having more than 50\% of the computing power of the whole network. While these so-called 51\% attacks are a threat on blockchains with a smaller number of network members, it is very unlikely to happen on the bitcoin blockchain \cite{Swan2015}. The concept of proof-of-stake in order to achive consensus in a decentralized manner became very popular and can be used in other areas of application too, such as elections, lotteries, asset registries, digital notarization and more \cite{Antonopoulos2017}.
+
+A different approach to store digital value is proof-of-stake. \cite{AntonopoulosWood2018}
+
 \section{Payments 1.5 - 3.5}
 \section{Lending 1.5 - 3.5}
 \section{Exchanging 1.5 - 3.5}
