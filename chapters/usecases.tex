@@ -1,4 +1,5 @@
 \chapter{Use Cases of Decentralized Finance}
+--- 9 pages ---
 \label{cha:UseCasesDecentralizedFinance}
 
 This chapter aims to introduce the five most relevant use cases of Decentralized Finance. Each use case is built on top of the previous one and rises in complexity. For example storing value in digital systems is quite easy nowadays but moving real physical assets such as gold or real estate into a blockchain is still pretty demanding. Note, that each type of financial service is not specific to Decentralized Finance, which means that they are applicable to every financial environment.
@@ -17,7 +18,7 @@ Bitcoin uses a mechanism called proof-of-work in order to give each block its va
 A different approach to storing digital value is proof-of-stake. Instead of making the participants of the network solve computational expensive problems, the consensus is created by proving that someone owns specific funds. A blockchain that uses a proof-of-stake algorithm to achieve consensus has a set of validators. These validators are running a master node which gives them the opportunity to vote. In order to do so, the validators need to prove that they own a specific amount of funds. This is done by sending a special transaction, which locks away their currencies for a specific time. If the validators are honest and their vote corresponds to the result of the majority, they will get their funds back and an additional reward proportional to their deposited stake. If their vote gets rejected, the dishonest validator risks loosing his money \cite{AntonopoulosWood2018}.
 
 \subsection{Switching the Consensus Algorithm}
-At the time of writing this in October 2020, the Ethereum blockchain uses a similar proof-of-work algorithm like Bitcoin, called \textit{Ethash}. However, Ethereum plans to switch to a proof-of-stake algorithm called \textit{Casper} in the near future. Algorithms that are based on proof-of-stake have the big advantage of less energy consumption because they are not focused on computational intensive tasks. The Bitcoin network, for example, has an annual electrical energy consumption of approximately 72.18 terawatt hours which is comparable to the consumption of Austria \cite{Digiconomist2020}. But proof-of-stake comes also with a caveat. Implementing incentives on a voting system which are based on the amount each validator is willing to stake means that the rich validators get richer and the poor validators stay poor.
+At the time of writing this in October 2020, the Ethereum blockchain uses a similar proof-of-work algorithm like Bitcoin, called \textit{Ethash}. However, Ethereum plans to switch to a proof-of-stake algorithm called \textit{Casper} in the near future \cite{Twitter2018}. Algorithms that are based on proof-of-stake have the big advantage of less energy consumption because they are not focused on computational intensive tasks. The Bitcoin network, for example, has an annual electrical energy consumption of approximately 72.18 terawatt hours which is comparable to the consumption of Austria \cite{Digiconomist2020}. But proof-of-stake comes also with a caveat. Implementing incentives on a voting system which are based on the amount each validator is willing to stake means that the rich validators get richer and the poor validators stay poor.
 
 The process of changing a consensus algorithm of a blockchain is not easy to accomplish. Because the network is decentralized, there is no single entity which can force all members to change the algorithm from proof-of-work to proof-of-stake. Just letting the people choose what they prefer to use is also not a good idea, because it is very unlikely that all agree on one type of algorithm. That would probably trigger a hard fork of the blockchain resulting in two separate networks, similar to what happened to Bitcoin in August 2017.
 
@@ -26,17 +27,24 @@ Bitcoin's network is by design very slow in verifying transactions. A block whic
 For a simple user of the blockchain who is neither a miner nor a validator it doesn't matter which consensus algorithm is being used. In fact, it isn't even important when developing decentralized applications based on smart contracts like it's done in chapter \ref{cha:DesignArchitecture}. What's important is, that the blockchain is able to store real value on the network by reaching consensus by its members.
 
 \section{Payments}
----1.5 to 3.5 pages---
+---1.5 pages---
 \subsection{Bitcoin}
 \subsection{Stable Coins}
 \subsection{Dynamic Supply Protocols}
 \subsection{Stability Protocols}
 
 \section{Lending \& Borrowing}
----1.5 to 3.5 pages---
+---1.5 pages---
 
 \section{Exchanging}
----1.5 to 3.5 pages---
+---1.5 pages---
+\subsection{Characteristics of Decentralized Exchanges}
+
+\subsection{Liquidity Pools}
+
+\subsection{Risks}
 
 \section{Investing}
----1.5 to 3.5 pages---
+\subsection{Tokens}
+\subsection{Derivatives}
+---1.5 pages---
