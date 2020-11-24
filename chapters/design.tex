@@ -2,21 +2,24 @@
 
 \label{cha:DesignArchitecture}
 
-\section{Blockchain Technologies}
---- 1 page ---
+\section{Technology Stack}
+\subsection{Solidity}
 The main component of decentralized web applications are Smart Contracts. Smart Contracts can be written in a few different programming languages such as LLL, Serpent, Solidity, Vyper and Bamboo. Solidity is by far the most popular and currently the de-facto standard in writing smart contracts \cite{AntonopoulosWood2018}. Solidity is statically typed, has a JavaScript-like syntax and supports various popular programming concepts such as object-orientation \cite{SolidityDocumentation}\cite{Solidity}.
 
-Truffle \cite{Truffle}.
+\subsection{Truffle}
+Truffle is a development environment which helps to develop decentralized applications on the Ethereum Virtual Machine \cite{Truffle}. It handles all the hart parts starting from Smart Contract compilation, testing, linking, deployment and continuous integration. When developing more than just some simple Smart Contracts it is an important tool to save time.
 
-Ganache \cite{Ganache}.
+\subsection{Ganache}
+Because testing a decentralized application on the main Ethereum network would not be a good idea (and expensive too), some sort of testing blockchain is needed. Ganache is a local blockchain for developers which provides everything to test a decentralized applications on the local machine \cite{Ganache}. It offers accounts with fake ether and works really well with Truffle, which share the same developers.
 
-Web3 \cite{Web3}.
+\subsection{Web3}
+In order to link Smart Contracts to a graphical user interface such as a web client application, web3.js comes into play. It is a JavaScript library and provides all the necessary APIs in order to connect a blockchain backend to a web frontend \cite{Web3}. It also manages connections to specific wallet providers such as MetaMask.
 
-Mocha \cite{Mocha}.
+\subsection{Mocha \& Chai}
+Testing plays in blockchain development an even bigger role than in software development in general, because deployed Smart Contracts are immutable and bugs literally cost money. A flawed function with causes an endless loop whould burn the entire gas that was available for that function call without doing anything useful. Mocha is a JavaScript testing framework which makes it possible to test the functionality of each Smart Contract in a structured and automated way \cite{Mocha}. Together with the assertion library Chai \cite{Chai} and the integration into Truffle, Mocha can release its full potential as a fully fledged blockchain testing environment.
 
-Chai \cite{Chai}.
-
-React \cite{React}.
+\subsection{React}
+What would be the best Smart Contract without a graphical user interfaces which gives people the opportunity to interact with the blockchain in an easy and intuitive way. React is a JavaScript library for building user interfaces for the web and by far the most popular web framework out there \cite{React}. React is super fast because it uses a virtual DOM and provides the user a modern and intuitive experience.
 
 \section{The ERC20 Token Standard}
 --- 1 page ---
