@@ -1,6 +1,7 @@
 \chapter{Design and Architecture}
-
 \label{cha:DesignArchitecture}
+
+This chapter builds on top of the concepts and use cases of the previous chapters and lays out the architecture and design of a typical decentralized application by using a more practical approach. After a short introduction into the used technologies there will be a detailed view on each important part of a modern decentralized web application. To keep this chapter more concise, only selected code snippets will be shown to describe certain aspects. However, the entire code base of the working application can be found on Github \cite{CherryPool}.
 
 \section{Technology Stack}
 \subsection{Solidity}
@@ -22,7 +23,97 @@ Testing plays in blockchain development an even bigger role than in software dev
 What would be the best Smart Contract without a graphical user interfaces which gives people the opportunity to interact with the blockchain in an easy and intuitive way. React is a JavaScript library for building user interfaces for the web and by far the most popular web framework out there \cite{React}. React is super fast because it uses a virtual DOM and provides the user a modern and intuitive experience.
 
 \section{The ERC20 Token Standard}
---- 1 page ---
+The ERC20 standard makes it possible to build standardized tokens on the Ethereum protocol which can be integrated into the existing ecosystem \cite{ERC20}. This is achieved through a common interface each token needs to implement. The standard was initially introduced in 2015 as an Ethereum Request for Comments (ERC). It received its name due to the automatic issue assignment on Github, which had the issue number 20 \cite{AntonopoulosWood2018}.
+
+\subsection{Example Implementation of the Interface}
+The function \texttt{totalSupply} returns the maximum amount available of this token in wei, the smallest unit possible. The supply can be either static or dynamic. In this case, it is static assigned through the constructor when the smart Contract is created. The return type is a 256 bit unsigned integer which is the most common data type in Solidity.
+
+\begin{GenericCode}
+ uint256 private _totalSupply;
+  
+ function totalSupply() public view returns (uint256) {
+   return _totalSupply;
+ }	
+\end{GenericCode}
+
+Each token is responsible to keep track of all addresses holding that token. This can be stored using the data type \texttt{mapping} which is a key value pair of addresses and token amounts. The function \texttt{balanceOf} returns the token balance for a specific address.
+
+\begin{GenericCode}
+ mapping(address => uint256) private balances;
+  
+ function balanceOf(address _owner) public view returns (uint256 balance) {
+   return balances[_owner];
+ }
+\end{GenericCode}
+
+The functionality of sending tokens to a specific address is implemented in the \texttt{transfer} function. It takes an address and and amount as parameters and returns a boolean if the transaction was successful. The \texttt{require} function checks for a specific condition to be true. If this is not the case, the function will be reverted and all the gas goes back to the sender, which can be evaluated in Solidity using \texttt{msg.sender}. In order to prevent over- or underflow errors when performing additions and subtractions, a small library \texttt{SafeMath} \ref{prog:SafeMath} is being utilized. If everything worked well, the \texttt{Transfer} event will be emitted.
+
+\begin{program}
+\caption{The SafeMath library.}
+\label{prog:SafeMath}
+\begin{GenericCode}
+library SafeMath {
+  function sub(uint256 _a, uint256 _b) internal pure returns (uint256) {
+    assert(_b <= _a);
+    return _a - _b;
+  }
+
+  function add(uint256 _a, uint256 _b) internal pure returns (uint256) {
+    uint256 c = _a + _b;
+    assert(c >= _a);
+    return c;
+  }
+}
+\end{GenericCode}
+\end{program}
+
+\begin{GenericCode}
+function transfer(address _to, uint256 _value) public returns (bool success) {
+  require(_value <= balances[msg.sender]);
+  balances[msg.sender] = balances[msg.sender].sub(_value);
+  balances[_to] = balances[_to].add(_value);
+  emit Transfer(msg.sender, _to, _value);
+  return true;
+}
+\end{GenericCode}
+
+The function \texttt{transferFrom} is very similar to \texttt{transfer} with the only difference that the caller is not the one who sends the tokens. This is usually not a physical person but rather a Smart Contract of a decentralized application. Tokens can be sent only on behalf of someone else if the sender accepts the amount first. All funds that are already released for transactions are stored in another mapping specifying for each address which addresses are enabled to send what amount.
+
+\begin{GenericCode}
+mapping(address => mapping(address => uint256)) private allowed;
+
+function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
+  require(_value <= balances[_from]);
+  require(_value <= allowed[_from][msg.sender]);
+  balances[_from] = balances[_from].sub(_value);
+  allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
+  balances[_to] = balances[_to].add(_value);
+  emit Transfer(_from, _to, _value);
+  return true;
+}
+\end{GenericCode}
+
+If the caller is not the sender of a transaction, funds need to be approved first. That is exactly what the function \texttt{approve} does. It authorizes the spender to spend a specific amount of the tokens of the address which called the function. Old funds that are already authorized will not be accumulated but rather overwritten. This makes it possible to revert an approval by calling the \texttt{approve} function another time with the value of zero. This function emits the \texttt{Approval} event.
+\begin{GenericCode}
+function approve(address _spender, uint256 _value) public returns (bool success) {
+  allowed[msg.sender][_spender] = _value;
+  emit Approval(msg.sender, _spender, _value);
+  return true;
+}
+\end{GenericCode}
+
+Because the data structure which holds the allowed funds is usually private, a public interface is needed to find out how much remaining tokens can be spent on behalf of someone else. The function \texttt{allowance} takes two parameters and returns the amount of tokens that the spender is authorized to spend from the owner's address.
+\begin{GenericCode}
+function allowance(address _owner, address _spender) public view returns (uint256 remaining) {
+  return allowed[_owner][_spender];
+}
+\end{GenericCode}
+
+The events \texttt{Transfer} and \texttt{Approval} play an important role in the interface of an ERC20 token. The \texttt{Transfer} event is emitted every time when a transaction is about to be executed. The \texttt{Approval} event is being called every time some tokens need to be approved. Both events trigger some sort of action in the wallet of the user. For example, the browser wallet MetaMask opens a popup window asking the user for confirmation, once an event is emitted. 
+\begin{GenericCode}
+event Transfer(address indexed _from, address indexed _to, uint256 _value);
+event Approval(address indexed _owner, address indexed _spender, uint256 _value);
+\end{GenericCode}
 
 \section{Lending Implementation}
 --- 1 page ---
