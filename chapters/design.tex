@@ -5,19 +5,19 @@ This chapter builds on top of the concepts and use cases of the previous chapter
 
 \section{Technology Stack}
 \subsection{Solidity}
-The main component of decentralized web applications are Smart Contracts. Smart Contracts can be written in a few different programming languages such as LLL, Serpent, Solidity, Vyper and Bamboo. Solidity is by far the most popular and currently the de-facto standard in writing smart contracts \cite{AntonopoulosWood2018}. Solidity is statically typed, has a JavaScript-like syntax and supports various popular programming concepts such as object-orientation \cite{SolidityDocumentation}\cite{Solidity}.
+The main components of decentralized web applications are Smart Contracts. Smart Contracts can be written in a few different programming languages such as LLL, Serpent, Solidity, Vyper and Bamboo. Solidity is by far the most popular and currently the de-facto standard in writing Smart Contracts \cite{AntonopoulosWood2018}. Solidity is statically typed, has a JavaScript-like syntax and supports various popular programming concepts such as libraries and inheritance \cite{SolidityDocumentation}. Because there are no classes in Solidity, it is considered not as an object-oriented but as a contract-oriented language \cite{Solidity}.
 
 \subsection{Truffle}
-Truffle is a development environment which helps to develop decentralized applications on the Ethereum Virtual Machine \cite{Truffle}. It handles all the hart parts starting from Smart Contract compilation, testing, linking, deployment and continuous integration. When developing more than just some simple Smart Contracts it is an important tool to save time.
+Truffle is a development environment which helps to develop decentralized applications on the Ethereum Virtual Machine \cite{Truffle}. It handles all the difficult parts starting from Smart Contract compilation, testing, linking, deployment and continuous integration. When developing more than just some simple Smart Contracts, Truffle is an important tool to save a lot of time.
 
 \subsection{Ganache}
-Because testing a decentralized application on the main Ethereum network would not be a good idea (and expensive too), some sort of testing blockchain is needed. Ganache is a local blockchain for developers which provides everything to test a decentralized applications on the local machine \cite{Ganache}. It offers accounts with fake ether and works really well with Truffle, which share the same developers.
+Because testing a decentralized application on the main Ethereum network would not be a good idea (and is expensive too), some sort of testing blockchain is needed. Ganache is a local blockchain for developers which provides everything to test a decentralized applications on the local machine \cite{Ganache}. It offers accounts with fake ether and works really well with Truffle, which is built by the same developers.
 
 \subsection{Web3}
 In order to link Smart Contracts to a graphical user interface such as a web client application, web3.js comes into play. It is a JavaScript library and provides all the necessary APIs in order to connect a blockchain backend to a web frontend \cite{Web3}. It also manages connections to specific wallet providers such as MetaMask.
 
 \subsection{Mocha \& Chai}
-Testing plays in blockchain development an even bigger role than in software development in general, because deployed Smart Contracts are immutable and bugs literally cost money. A flawed function with causes an endless loop whould burn the entire gas that was available for that function call without doing anything useful. Mocha is a JavaScript testing framework which makes it possible to test the functionality of each Smart Contract in a structured and automated way \cite{Mocha}. Together with the assertion library Chai \cite{Chai} and the integration into Truffle, Mocha can release its full potential as a fully fledged blockchain testing environment.
+Testing plays in blockchain development an even bigger role than in software development in general, because deployed Smart Contracts are immutable and bugs literally cost money. A flawed function with causes an endless loop whould burn the entire gas that was available for that function call without doing anything useful. Mocha is a JavaScript testing framework which makes it possible to test the functionality of each Smart Contract in a structured and automated way \cite{Mocha}. Together with the assertion library Chai \cite{Chai} and the integration into Truffle, Mocha releases its full potential as a fully fledged blockchain testing environment.
 
 \subsection{React}
 What would be the best Smart Contract without a graphical user interfaces which gives people the opportunity to interact with the blockchain in an easy and intuitive way. React is a JavaScript library for building user interfaces for the web and by far the most popular web framework out there \cite{React}. React is super fast because it uses a virtual DOM and provides the user a modern and intuitive experience.
@@ -26,7 +26,7 @@ What would be the best Smart Contract without a graphical user interfaces which 
 The ERC20 standard makes it possible to build standardized tokens on the Ethereum protocol which can be integrated into the existing ecosystem \cite{ERC20}. This is achieved through a common interface each token needs to implement. The standard was initially introduced in 2015 as an Ethereum Request for Comments (ERC). It received its name due to the automatic issue assignment on Github, which had the issue number 20 \cite{AntonopoulosWood2018}.
 
 \subsection{Example Implementation}
-The function \texttt{totalSupply} returns the maximum amount available of this token in wei, the smallest unit possible. The supply can be either static or dynamic. In this case, it is static assigned through the constructor when the smart Contract is created. The return type is a 256 bit unsigned integer which is the most common data type in Solidity.
+The function \texttt{totalSupply} returns the maximum amount available of this token in \textit{wei}, the smallest unit possible. The supply can be either static or dynamic. In this case, it is static assigned through the constructor when the smart Contract is created. The return type is a 256 bit unsigned integer which is the most common data type in Solidity.
 
 \begin{GenericCode}
  uint256 private _totalSupply;
@@ -46,7 +46,7 @@ Each token is responsible to keep track of all addresses holding that token. Thi
  }
 \end{GenericCode}
 
-The functionality of sending tokens to a specific address is implemented in the \texttt{transfer} function. It takes an address and and amount as parameters and returns a boolean if the transaction was successful. The \texttt{require} function checks for a specific condition to be true. If this is not the case, the function will be reverted and all the gas goes back to the sender, which can be evaluated in Solidity using \texttt{msg.sender}. In order to prevent over- or underflow errors when performing additions and subtractions, a small library \texttt{SafeMath} \ref{prog:SafeMath} is being utilized. If everything worked well, the \texttt{Transfer} event will be emitted.
+The functionality of sending tokens to a specific address is implemented in the \texttt{transfer} function. It takes an address and an amount as parameters and returns a boolean if the transaction was successful. The \texttt{require} function checks for a specific condition to be true. If this is not the case, the function will be reverted and all the gas goes back to the sender, which can be evaluated in Solidity using \texttt{msg.sender}. In order to prevent over- or underflow errors when performing additions and subtractions, a small library \texttt{SafeMath} \ref{prog:SafeMath} is being utilized. If everything worked well, the \texttt{Transfer} event will be emitted.
 
 \begin{program}
 \caption{The SafeMath library.}
@@ -93,7 +93,7 @@ function transferFrom(address _from, address _to, uint256 _value) public returns
 }
 \end{GenericCode}
 
-If the caller is not the sender of a transaction, funds need to be approved first. That is exactly what the function \texttt{approve} does. It authorizes the spender to spend a specific amount of the tokens of the address which called the function. Old funds that are already authorized will not be accumulated but rather overwritten. This makes it possible to revert an approval by calling the \texttt{approve} function another time with the value of zero. This function emits the \texttt{Approval} event.
+If the caller is not the sender of a transaction, funds need to be approved first. That is exactly what the function \texttt{approve} does. It authorizes the spender to spend a specific amount of the tokens of the address which called the function. Old funds that are already authorized will not be accumulated but overwritten. This makes it possible to revert an approval by calling the \texttt{approve} function another time with the value of zero. This function emits the \texttt{Approval} event.
 \begin{GenericCode}
 function approve(address _spender, uint256 _value) public returns (bool success) {
   allowed[msg.sender][_spender] = _value;
@@ -102,14 +102,14 @@ function approve(address _spender, uint256 _value) public returns (bool success)
 }
 \end{GenericCode}
 
-Because the data structure which holds the allowed funds is usually private, a public interface is needed to find out how much remaining tokens can be spent on behalf of someone else. The function \texttt{allowance} takes two parameters and returns the amount of tokens that the spender is authorized to spend from the owner's address.
+Because the data structure holding the allowed funds is usually private, a public interface is needed to find out how much remaining tokens can be spent on behalf of someone else. The function \texttt{allowance} takes two parameters and returns the amount of tokens that the spender is authorized to spend from the owner's address.
 \begin{GenericCode}
 function allowance(address _owner, address _spender) public view returns (uint256 remaining) {
   return allowed[_owner][_spender];
 }
 \end{GenericCode}
 
-The events \texttt{Transfer} and \texttt{Approval} play an important role in the interface of an ERC20 token. The \texttt{Transfer} event is emitted every time when a transaction is about to be executed. The \texttt{Approval} event is being called every time some tokens need to be approved. Both events trigger some sort of action in the wallet of the user. For example, the browser wallet MetaMask opens a popup window asking the user for confirmation, once an event is emitted. 
+The events \texttt{Transfer} and \texttt{Approval} play an important role in the interface of an ERC20 token. The \texttt{Transfer} event is emitted every time when a transaction is about to be executed. The \texttt{Approval} event is being called every time some tokens need to be approved. Both events trigger some sort of action in the linked wallet application of the user. For example, the browser wallet MetaMask opens a popup window asking the user for confirmation, once an event is emitted. 
 \begin{GenericCode}
 event Transfer(address indexed _from, address indexed _to, uint256 _value);
 event Approval(address indexed _owner, address indexed _spender, uint256 _value);
