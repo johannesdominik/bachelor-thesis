@@ -5,12 +5,16 @@
 
 The term "cryptocurrency" already suggests, that blockchains rely heavily on cryptography. But cryptography is an even broader topic and exceeds by far the ranges of blockchains, cryptocurrencies and decentralization. Without crytography, our digital life would be very different today. Cryptography is the theory of data encryption, which means "secret writing" in Greek. Together with cryptoanalysis, which is the opposite (decoding data), cryptographic can be conflated as cryptology. Cryptography makes it possible to make data content unreadable for specific people, detect unauthorized data manipulation and guarantee the authenticity of a communication parter. What cryptography cannot achieve, is prevention of unauthorized data manipulation and the prevention that data is being read at all.
 
-\subsection{Public Key Infrastructures}
---- 0.5 pages ---
+\subsection{Public Key Cryptography}
+Public key cryptography are asymmetrical encryption methods that utilize both private and public keys. While symmetrical enryption methods such as the Data Encryption Standard (DES) and Advanced Encryption Standard (AES) use a single key to encrypt and decrypt a message, asymmetrical encryption methods use the public key of the recipient to decrypt the message and a private key to enrypt it. At the first glance it may seem that asymmetrical enryption methods are way better than symmetrical encryption methods and that they should be used all the time. But that is not the case. Asymmetrical encryption methods are less secure, more complex, more difficult to invent and slower than symmetrical encryption methods. Each type of encryption method has its own use cases so they actually complement each other. While symmetrical encryption methods are really good at encrypting data content, asymmetrical enryption methods are used to exchange the symmetrical keys and prove ownership and authenticity through digital signatures.
+
+The most popular asymmetric enryption methods are RSA (Rivest, Shamii, Adelman), Diffie-Hellman and elliptic curve cryptography. RSA and Diffie-Hellman are the most common algorithms outside of the blockchain ecosystem and are used for example in banking, telecommunications and ecommerce. Because those are not used by blockchain technologies, we will focus on elliptic curve cryptography.
 \subsection{Elliptic Curve Cryptography}
 --- 0.5 pages ---
 \subsection{Hashing Functions}
---- 0.5 pages ---
+A hashing function maps a string of arbitrary size to a value of fixed size. But not all hashing functions are suitable for cryptographic problems. A good hashing function aims to have as few collisions as possible. A collision occurs when two different input strings lead to the same output hash. In order to prevent that as good as possible, each hash value should occur equally and a minimal modification of the input string should lead to a completely new hash value. This is important because the more collisions occur, the more vulnerable is the hashing function for hackers. If a hacker finds a string that generates the same hash value he can apply the real signature to his faked text.
+
+--- ethereum hash functions --- 
 
 \section{The Ethereum Blockchain}
 \subsection{Blockchain Fundamentals}
