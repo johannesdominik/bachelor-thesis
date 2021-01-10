@@ -26,6 +26,7 @@ What would be the best Smart Contract without a graphical user interfaces which 
 While other frontend frameworks such as Angular come with TypeScript out of the box, you have to add additional dependencies in React yourself. When it comes to larger projects or whenever bugs could become expensive, it is a good idea to introduce some kind of type checking in JavaScript. TypeScript is a superset of JavaScript and helps to detect errors before they occur at runtime \cite{TypeScript}. In financial applications like this, there is usually an even higher focus on reliable, bug-free code.
 
 \section{The ERC20 Token Standard}
+\label{sec:ERC20}
 The ERC20 standard makes it possible to build standardized tokens on the Ethereum protocol which can be integrated into the existing ecosystem \cite{ERC20}. This is achieved through a common interface each token needs to implement. The standard was initially introduced in 2015 as an Ethereum Request for Comments (ERC). It received its name due to the automatic issue assignment on Github, which had the issue number 20 \cite{AntonopoulosWood2018} \cite{BadrHorrocksWu2018}.
 
 \subsection{Example Implementation}
@@ -119,7 +120,100 @@ event Approval(address indexed _owner, address indexed _spender, uint256 _value)
 \end{GenericCode}
 
 \section{Lending Implementation}
---- 1.25 page ---
+There are a few different approaches on how to implement a lending functionality. One possibility would be the utilization of collateral like it is done by Maker\cite{MakerDAO2021}. However, this section will describe how to implement a lending application using liquidity pools as it builds the foundation for a decentralized exchange such as Uniswap\cite{Uniswap2020}.
+
+As described in section \ref{subsec:liquiditypools}, liquidity pools need to have a pair of cryptocurrencies or tokens. As we are building on top of the Ethereum network, we are limited to Ether and Ethereum tokens. In this example, the liquidity pool holds Ether and an ERC20 token called CherryToken, as implemented in section \ref{sec:ERC20}. Besides the token reference \texttt{cherryToken} and the exchange reference \texttt{cherrySwap}, the smart contract needs to keep track of the curren pool balance, its collected fees by the exchange and the balances each liquidity miner holds. The mapping \texttt{unresolvedEth} is needed to manage Ether that is sent to the contract without referencing a specific swap transaction.
+\begin{GenericCode}
+string public name = "CherryLiquidity";
+address public owner;
+CherryToken public cherryToken;
+CherrySwap public cherrySwap;
+uint256 private ethBalance;
+uint256 private ctnBalance;
+uint256 private collectedFees = 0;
+mapping(address => uint256) private balancesInEth;
+mapping(address => uint256) private balancesInCtn;
+mapping(address => uint256) private unresolvedEth;
+\end{GenericCode}
+
+The constructor initializes the smart contract, sets the contract references and seeds the pool with an initial amount. The getter functions \texttt{getEthBalance}, \texttt{getCtnBalance} and \texttt{getCollectedFees} provide the frontend with necessary information to implement a good user experience and to keep as much calculation off-chain.
+\begin{GenericCode}
+constructor(CherryToken _cherryToken, CherrySwap _cherrySwap, uint256 _initialEthSupply, uint256 _initialCtnSupply) public {
+  cherryToken = _cherryToken;
+  cherrySwap = _cherrySwap;
+  ethBalance = _initialEthSupply;
+  ctnBalance = _initialCtnSupply;
+  cherryToken.transferFrom(msg.sender, address(this), _initialCtnSupply);
+  owner = msg.sender;
+}
+
+function getEthBalance() public view returns (uint256 balance) {
+  return address(this).balance;
+}
+
+function getCtnBalance() public view returns (uint256 balance) {
+  return cherryToken.balanceOf(address(this)) - collectedFees;
+}
+
+function getCollectedFees() public view returns (uint256 fees) {
+  return collectedFees;
+}
+\end{GenericCode}
+
+Adding liquidity works a little bit different for Ether and an ERC20 token, as Ether is a fundamental feature of Solidity and an ERC20 token is managed by the smart contract itself. At first, Ether needs to be sent to \texttt{addEthLiquidity}. As it is a payable function, it is able to receive funds. They are owned by the smart contract and are mapped to the user through his address, which is stored in \texttt{msg.sender}. Secondly, the function \texttt{addLiquidity} needs to be called to complete the pool deposit. After a few integrity checks, the unresolved Ether will be reduced, the tokens transferred and the pool balances updated.
+\begin{GenericCode}
+function addEthLiquidity() payable {
+  require(msg.value > 0, "ETH amount cannot be 0");
+  unresolvedEth[msg.sender] = unresolvedEth[msg.sender] + msg.value;
+}
+
+function addLiquidity(uint256 _ethAmount, uint256 _ctnAmount) public {
+  require(unresolvedEth[msg.sender] >= _ethAmount, "ETH not sent yet");
+  require(_ctnAmount > 0, "CTN amount cannot be 0");
+  require(cherryToken.balanceOf(msg.sender) > _ctnAmount, "not enough CTN funds");
+  unresolvedEth[msg.sender] = unresolvedEth[msg.sender] - _ethAmount;
+  cherryToken.transferFrom(msg.sender, address(this), _ctnAmount);
+  balancesInEth[msg.sender] = balancesInEth[msg.sender] + _ethAmount;
+  balancesInCtn[msg.sender] = balancesInCtn[msg.sender] + _ctnAmount;
+}	
+\end{GenericCode}
+
+Removing liquidity from the pool means withdrawing the lended funds and receiving an additional reward proportional to the pool share. As the reward calculation is quite computational intensive and Soldity is not good at managing divisions and percentages, the reward will be computed off-chain.
+\begin{GenericCode}
+function removeLiquidity(uint256 _ethAmount, uint256 _ctnAmount, uint256 reward) public {
+  require(_ethAmount > 0, "eth amount cannot be 0");
+  require(_ctnAmount > 0, "ctn amount cannot be 0");
+  require(getEthBalance() >= _ethAmount, "not enough ETH in pool");
+  require(getCtnBalance() >= _ctnAmount, "not enough CTN in pool");
+  require(balancesInEth[msg.sender] > _ethAmount, "not enough ETH deposited");
+  require(balancesInCtn[msg.sender] > _ctnAmount, "not enough CTN deposited");
+  require(collectedFees >= reward, "invalid reward");
+  uint256 ctnPayout = _ctnAmount + reward;
+  cherryToken.transferFrom(address(this), msg.sender, ctnPayout);
+  msg.sender.transfer(_ethAmount);
+  balancesInEth[msg.sender] = balancesInEth[msg.sender] - _ethAmount;
+  balancesInCtn[msg.sender] = balancesInCtn[msg.sender] - _ctnAmount;
+}	
+\end{GenericCode}
+
+The functions \texttt{processEthToCtn} and \texttt{processCtnToEth} are being called by the exchange in order to withdraw the needed funds and deduct the fees. To make sure only the exchange can call this function, the address of the recipient will be checked at the beginning of each function.
+\begin{GenericCode}
+function processEthToCtn(address recipient, uint256 ctnAmount, uint256 fees) public  {
+  require(msg.sender == address(cherrySwap), "address not authorized");
+  addFees(fees);
+  cherryToken.transfer(recipient, ctnAmount);
+}
+
+function processCtnToEth(address recipient, uint256 ethAmount, uint256 fees) public {
+  require(msg.sender == address(cherrySwap), "address not authorized");
+  addFees(fees);
+  recipient.transfer(ethAmount);
+}
+
+function addFees(uint256 _amount) private {
+  collectedFees = collectedFees + _amount;
+}	
+\end{GenericCode}
 
 \section{Exchange Implementation}
 --- 1.25 page ---
