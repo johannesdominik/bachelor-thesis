@@ -25,6 +25,28 @@ What would be the best Smart Contract without a graphical user interfaces which 
 \subsection{TypeScript}
 While other frontend frameworks such as Angular come with TypeScript out of the box, you have to add additional dependencies in React yourself. When it comes to larger projects or whenever bugs could become expensive, it is a good idea to introduce some kind of type checking in JavaScript. TypeScript is a superset of JavaScript and helps to detect errors before they occur at runtime \cite{TypeScript}. In financial applications like this, there is usually an even higher focus on reliable, bug-free code.
 
+\section{The SafeMath Library}
+Arithmetic operations in Solidity wrap on overflow. This can lead to bugs, because most programmers assume, that it would raise an exception when an overflow occurs, as it is done in other high level programming languages. By introducing the library \texttt{SafeMath}, an entire class of bugs is being eliminated so it should be used everywhere possible.
+
+\begin{program}
+\caption{The SafeMath library.}
+\label{prog:SafeMath}
+\begin{GenericCode}
+library SafeMath {
+  function sub(uint256 _a, uint256 _b) internal pure returns (uint256) {
+    assert(_b <= _a);
+    return _a - _b;
+  }
+
+  function add(uint256 _a, uint256 _b) internal pure returns (uint256) {
+    uint256 c = _a + _b;
+    assert(c >= _a);
+    return c;
+  }
+}
+\end{GenericCode}
+\end{program}
+
 \section{The ERC20 Token Standard}
 \label{sec:ERC20}
 The ERC20 standard makes it possible to build standardized tokens on the Ethereum protocol which can be integrated into the existing ecosystem \cite{ERC20}. This is achieved through a common interface each token needs to implement. The standard was initially introduced in 2015 as an Ethereum Request for Comments (ERC). It received its name due to the automatic issue assignment on Github, which had the issue number 20 \cite{AntonopoulosWood2018} \cite{BadrHorrocksWu2018}.
@@ -51,25 +73,6 @@ Each token is responsible to keep track of all addresses holding that token. Thi
 \end{GenericCode}
 
 The functionality of sending tokens to a specific address is implemented in the \texttt{transfer} function. It takes an address and an amount as parameters and returns a boolean if the transaction was successful. The \texttt{require} function checks for a specific condition to be true. If this is not the case, the function will be reverted and all the gas goes back to the sender, which can be evaluated in Solidity using \texttt{msg.sender}. In order to prevent over- or underflow errors when performing additions and subtractions, a small library \texttt{SafeMath} \ref{prog:SafeMath} is being utilized. If everything worked well, the \texttt{Transfer} event will be emitted.
-
-\begin{program}
-\caption{The SafeMath library.}
-\label{prog:SafeMath}
-\begin{GenericCode}
-library SafeMath {
-  function sub(uint256 _a, uint256 _b) internal pure returns (uint256) {
-    assert(_b <= _a);
-    return _a - _b;
-  }
-
-  function add(uint256 _a, uint256 _b) internal pure returns (uint256) {
-    uint256 c = _a + _b;
-    assert(c >= _a);
-    return c;
-  }
-}
-\end{GenericCode}
-\end{program}
 
 \begin{GenericCode}
 function transfer(address _to, uint256 _value) public returns (bool success) {
@@ -119,7 +122,7 @@ event Transfer(address indexed _from, address indexed _to, uint256 _value);
 event Approval(address indexed _owner, address indexed _spender, uint256 _value);
 \end{GenericCode}
 
-\section{Lending Implementation}
+\section{Liquidity Pool Implementation}
 There are a few different approaches on how to implement a lending functionality. One possibility would be the utilization of collateral like it is done by Maker\cite{MakerDAO2021}. However, this section will describe how to implement a lending application using liquidity pools as it builds the foundation for a decentralized exchange such as Uniswap\cite{Uniswap2020}.
 
 As described in section \ref{subsec:liquiditypools}, liquidity pools need to have a pair of cryptocurrencies or tokens. As we are building on top of the Ethereum network, we are limited to Ether and Ethereum tokens. In this example, the liquidity pool holds Ether and an ERC20 token called CherryToken, as implemented in section \ref{sec:ERC20}. Besides the token reference \texttt{cherryToken} and the exchange reference \texttt{cherrySwap}, the smart contract needs to keep track of the curren pool balance, its collected fees by the exchange and the balances each liquidity miner holds. The mapping \texttt{unresolvedEth} is needed to manage Ether that is sent to the contract without referencing a specific swap transaction.
