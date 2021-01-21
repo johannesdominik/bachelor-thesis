@@ -219,13 +219,164 @@ function addFees(uint256 _amount) private {
 \end{GenericCode}
 
 \section{Exchange Implementation}
---- 1.25 page ---
+A truly decentralized exchange is dependent of its own liquidity pools. While the functionality of a liquidity pool is really complex, the actual implementation of the exchange is a lot easier. It can be implemented in just two functions. oOne function for each exchange direction. Both of these functions follow the same structure: Receiving funds, calculating fees, deducting fees and sending funds.
+
+When exchanging from Ether to an ERC20 token, the function needs to be payable. If a function is payable, network participants have the opportunity to send Ether to the contract address and specifying a specific function in the data component of the transaction. Most smart contracts have a fallback function which handles funds that are not dedicated to a specific function. Whenever the data component of a transaction addressed to the smart contract is empty, it will be handled by the fallback function, where the smart contract could keep track of the sender addresses.
+ 
+\begin{GenericCode}
+function () external payable {} 
+\end{GenericCode}
+
+In this case, the fallback function is empty, as another specific function handles the exchange mechanism. Incoming funds from the fallback function will be added into the liquidity pool, which contributes to the price stability of the exchange.
+
+If someone wants to exchange Ether into an ERC20 token, the name of the function needs to be specified. The incoming payment is accessible in the function by using the value property of the message object. After checking if the payment is not empty, the function calculates the fees which will distributed to the liquidity miners. This calculation can be either fixed or dynamically. On more sophisticated exchanges, the percentage of the fees uses an approximation of an exponential curve. If the liquidity pool is very small, the fees are really high\footnote{up to 50\% and more}. As the pool gains more depth, the fees decrease into small fractions of percentages but never will be zero.
+
+But even simple percentage calculations are a little bit complicated in Solidity, as the languages does not provide a floating point data type. All numeric asset representations are stored in wei, the smallest unit on the Ethereum Platform. One Ether is equivalent to one quintillion wei, which is a number with 19 digits.
+
+\begin{GenericCode}
+function swapEthToCtn() public payable {
+  require(msg.value > 0, "amount cannot be 0");
+  uint256 fees = msg.value.mul(100).div(1);
+  uint256 ctnAmount = msg.value.mul(1000).sub(fees);
+  _addFees(fees);
+  require(getCtnBalance() >= ctnAmount, "not enough funds available");
+  _cherryToken.transfer(msg.sender, ctnAmount);
+  }	
+\end{GenericCode}
+
+After the fees are calculated, the function checks, if the smart contract has enough funds to pay the user back. If this is not the case, the transaction aborts and the money will be transferred back to the user. If there are still enough funds available, the amount deducted by the fees will be paid back using the \texttt{transfer} function from the ERC token standard.
+
+The reversed function is not equipped with the \texttt{payable} modifier, as the incoming funds are an ERC20 token. Because the funds of the ERC20 tokens are managed by the token itself, the exchange contract has no direct access to it. If a user sends token funds to the address of the exchange, the exchange has no way to get notified about it. Therefore, the token transaction will take place in the contract function on behalf of the user. All the user has to do before calling the exchange function, is to grant the exchange permission to spend the funds on his behalf using the \texttt{approve} function from the ERC20 token standard.
+
+Instead of just paying the desired amount to the exchange, the amount needs to be passed to the function as a parameter. As before, the amount is being checked if it is empty to save the gas which would be wasted when executing a swap with zero funds. After that, the exchange rate and fees will be calculated. After another safety check, the tokens will be sent from the user to the exchange and the exchange sends the Ether amount back to the user using the built-in \texttt{transfer} function.
+
+\begin{GenericCode}
+  function swapCtnToEth(uint256 amount) public {
+    require(amount > 0, "amount cannot be 0");
+    uint256 ethAmount = amount.div(1000);
+    uint256 fees = ethAmount.mul(1).div(10);
+    _addFees(fees);
+    require(getEthBalance() >= ethAmount.sub(fees), "not enough funds available");
+    _cherryToken.transferFrom(msg.sender, address(this), amount);
+    msg.sender.transfer(ethAmount);
+  }	
+\end{GenericCode}
 
 \section{Testing Smart Contracts}
---- 1.25 page ---
+Testing plays a crucial part in the development of decentralized applications. Once deployed, the smart contracts are immutable on the blockchain. Fixing bugs after the initial deployment can be expensive and tedious, as the affected smart contracts need to be re-deployed and might be incompatible with the previous version. When working with financial assets of other people, it is even more vital, to minimize the number of bugs. Therefore, most applications use one or more testing frameworks and use a three-phase deployment cycle, as described in more detail in section \ref{sec:deployment}.
+
+As a developer, you have the choice to write tests natively in Solidity, or using an arbitrary testing framework based on JavaScript. When working with Truffle, the testing framework Mocha\cite{Mocha} and the assertion library Chai\cite{Chai} are preinstalled as the default. All tests that are in the testing subdirectory, will be executed using the command \texttt{truffle test}.
+
+At the top of each test file, the artifacts of the used smart contracts, as well as Chai, need to be imported:
+\begin{GenericCode}
+const CherryPool = artifacts.require('CherryPool');
+const CherryToken = artifacts.require('CherryToken');
+
+require('chai')
+  .use(require('chai-as-promised'))
+  .should();	
+\end{GenericCode}
+
+The specific tests are to be implemented in a contract block, which takes two parameters: The name of the tested contract and an array of test accounts as parameters. As the first account is used to deploy the contract, it is labelled as the contract owner.
+
+\begin{GenericCode}
+contract('CherryPool', ([owner, user]) => {
+	// tests are here
+}	
+\end{GenericCode}
+
+While the contract compilation takes place before the tests are being executed, the smart contracts still need to be instantiated. This can be done using a \texttt{before} block, where all initialization tasks for the tests take place:
+
+\begin{GenericCode}
+before(async () => {
+  // load contracts
+  cherryToken = await CherryToken.new();
+  cherryPool = await CherryPool.new(cherryToken.address);
+  await cherryToken.transfer(cherryPool.address, '1000000000000000000000'); // 1000 CTN
+  await web3.eth.sendTransaction({ from: owner, to: cherryPool.address, value: web3.utils.toWei('1') });
+});	
+\end{GenericCode}
+
+The actual tests are grouped together to tests that are similar to each other or that test the same functionality into \texttt{describe} and \texttt{it} blocks for the concrete unit tests. The estimated results of the test can be checkt with assertions or by appending \texttt{should.be.rejected} to a function call.
+
+\begin{GenericCode}
+describe('CherryPool deployment', async () => {
+  it('has no collected fees yet', async () => {
+    const collectedFees = await cherryPool.getCollectedFees();
+    assert.equal(web3.utils.fromWei(collectedFees), 0);
+  });
+
+  it('has initial Ether pool', async () => {
+    const ethBalance = await cherryPool.getEthBalance();
+    assert.equal(web3.utils.fromWei(ethBalance), 1);
+  });
+
+  it('has initial CherryToken pool', async () => {
+    const ctnBalance = await cherryPool.getCtnBalance();
+    assert.equal(web3.utils.fromWei(ctnBalance), 1000);
+  });
+});
+\end{GenericCode}
 
 \section{Connecting Smart Contracts to Web Applications}
---- 1 page ---
+The connection between the web frontend and the smart contracts is done using the JavaScript framework Web3\cite{Web3}, which is maintained by the Ethereum core team. It contains a lot of useful utility functions as seen before such as \texttt{web3.eth.sendTransaction()} for making transaction or \texttt{web3.utils.fromWei()} to convert a number from wei into Ether.
+
+When the user wants to connect to a wallet, Web3 needs to determine the network provider first. Once detected, a new instance of Web3 will be instantiated and is ready for use.
+
+\begin{GenericCode}
+function loadWeb3() {
+  if ((window as any).ethereum) {
+    (window as any).web3 = new Web3((window as any).ethereum);
+    (window as any).ethereum.enable().then();
+    return true;
+  } else if ((window as any).web3) {
+    (window as any).web3 = new Web3((window as any).web3.currentProvider);
+    return true;
+  }
+
+  window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!');
+  return false;
+}	
+\end{GenericCode}
+
+The accounts array can be accessed via \texttt{web3.eth.getAccounts()} and the network id is retrieved using \texttt{web3.net.getId()}. Each contract can be instantiated afterwards based on the compilation artifacts. In addition to the tests, the correct network needs to selected first.
+
+\begin{GenericCode}
+const cherryPoolData = (CherryPool as any).networks[networkId];
+if (cherryPoolData) {
+  cherryPool = new web3.eth.Contract((CherryPool as any).abi, cherryPoolData.address);
+} else {
+  alert('CherryPool contract not deployed to detected network!');
+  return null;
+}	
+\end{GenericCode}
+
+After these steps, the API is ready to be used by any UI component. Smart contract functions can be invoked using \texttt{call()} or \texttt{send()}. The function \texttt{call()} is used if the function does not alter the state of the blockchain. A typical use case for that is retreiving an account balance:
+
+\begin{GenericCode}
+account.cherryToken.methods.balanceOf(account.address).call().then((ctnBalance: number) => {
+  setCherryTokenBalance(web3.utils.fromWei(ctnBalance.toString()));
+});
+          
+\end{GenericCode}
+
+If a feature needs to alter the state of the blockchain, the function \texttt{send()} needs to be used. As every state modification costs gas, this will usually lead to a confirmation dialog provided by the wallet of the user. Typical use cases for that are adding liquidity, exchanging assets or approving funds for other accounts:
+
+\begin{GenericCode}
+account.cherryToken.methods.approve(
+  account.cherryPool._address,
+  web3.utils.toWei(ctnToSupply.toString())
+).send({ from: account.address }).then();	
+\end{GenericCode}
+
 
 \section{Smart Contract Deployment}
---- 0.5 page ---
+\label{sec:deployment}
+
+A typical release cycle of a blockchain application consists of three testing environments. At first, the smart contracts will be deployed to a local blockchain such as Ganache\cite{Ganache}. That is the environment where most of the testing will take place. Once the application is quite stable, it will be migrated to a public test network. These networks provide more realistic conditions, as it behaves more like the main network. Assets on the test networks have no value, which is really difficult to implement in reality. In order to prevent a value increase, the test networks need to be redeployed from time to time.
+The most important test networks on Ethereum are Ropsten, Kovan (using the Aura consensus protocol) and Rinkeby (using the Clique consensus protocol). These conensus protocls are specifically designed to prevent the creation of value, which is exactly the opposite what the conensus protocols Proof of Work and Proof of Stake are trying to achieve.
+
+
+
+
+
