@@ -204,47 +204,51 @@ function removeLiquidity(uint256 ethAmount, uint256 ctnAmount, uint256 liquidity
 \end{GenericCode}
 
 \section{Exchange Implementation}
-A truly decentralized exchange is dependent of its own liquidity pools. While the functionality of a liquidity pool is really complex, the actual implementation of the exchange is a lot easier. It can be implemented in just two functions. oOne function for each exchange direction. Both of these functions follow the same structure: Receiving funds, calculating fees, deducting fees and sending funds.
+A truly decentralized exchange is dependent of its own liquidity pools. While the concept of a liquidity pool is quite complex, the actual implementation
+of the exchange is a lot easier. It can be implemented in just two functions. One function for each exchange direction. Both of these functions follow
+the same structure: Receiving funds, calculating fees, deducting fees and sending funds.
 
-When exchanging from Ether to an ERC20 token, the function needs to be payable. If a function is payable, network participants have the opportunity to send Ether to the contract address and specifying a specific function in the data component of the transaction. Most smart contracts have a fallback function which handles funds that are not dedicated to a specific function. Whenever the data component of a transaction addressed to the smart contract is empty, it will be handled by the fallback function, where the smart contract could keep track of the sender addresses.
- 
+When exchanging from Ether to an ERC20 token, the function needs to be payable again. The incoming payment is accessible in the function by using the value
+property of the message object. After checking if the payment is not empty, the function calculates the fees which will distributed to the liquidity providers.
+This calculation can be either fixed or dynamically. On more sophisticated exchanges, the percentage of the fees uses an approximation of an exponential curve.
+If the liquidity pool is very small, the fees are really high\footnote{up to 50\% and more}. As the pool gains more depth, the fees decrease into small fractions
+of percentages but never will be zero.
+
+All numeric asset representations are stored in wei, the smallest unit on the Ethereum Platform. One Ether is equivalent to one quintillion wei, which is a
+number with 19 digits.
+
 \begin{GenericCode}
-function () external payable {} 
-\end{GenericCode}
-
-In this case, the fallback function is empty, as another specific function handles the exchange mechanism. Incoming funds from the fallback function will be added into the liquidity pool, which contributes to the price stability of the exchange.
-
-If someone wants to exchange Ether into an ERC20 token, the name of the function needs to be specified. The incoming payment is accessible in the function by using the value property of the message object. After checking if the payment is not empty, the function calculates the fees which will distributed to the liquidity miners. This calculation can be either fixed or dynamically. On more sophisticated exchanges, the percentage of the fees uses an approximation of an exponential curve. If the liquidity pool is very small, the fees are really high\footnote{up to 50\% and more}. As the pool gains more depth, the fees decrease into small fractions of percentages but never will be zero.
-
-But even simple percentage calculations are a little bit complicated in Solidity, as the languages does not provide a floating point data type. All numeric asset representations are stored in wei, the smallest unit on the Ethereum Platform. One Ether is equivalent to one quintillion wei, which is a number with 19 digits.
-
-\begin{GenericCode}
-function swapEthToCtn() public payable {
+function swapEthToCtn(uint256 ctnOutput, uint256 fees) public payable {
   require(msg.value > 0, "amount cannot be 0");
-  uint256 fees = msg.value.mul(100).div(1);
-  uint256 ctnAmount = msg.value.mul(1000).sub(fees);
   _addFees(fees);
-  require(getCtnBalance() >= ctnAmount, "not enough funds available");
-  _cherryToken.transfer(msg.sender, ctnAmount);
-  }	
+  require(getCtnBalance() >= ctnOutput, "not enough funds available");
+  _cherryToken.transfer(msg.sender, ctnOutput);
+}
 \end{GenericCode}
 
-After the fees are calculated, the function checks, if the smart contract has enough funds to pay the user back. If this is not the case, the transaction aborts and the money will be transferred back to the user. If there are still enough funds available, the amount deducted by the fees will be paid back using the \texttt{transfer} function from the ERC token standard.
+After the fees are calculated, the function checks, if the smart contract has enough funds to pay the user back. If this is not the case, the transaction aborts
+and the money will be transferred back to the user. If there are still enough funds available, the amount deducted by the fees will be paid back using the
+\texttt{transfer} function from the ERC token standard.
 
-The reversed function is not equipped with the \texttt{payable} modifier, as the incoming funds are an ERC20 token. Because the funds of the ERC20 tokens are managed by the token itself, the exchange contract has no direct access to it. If a user sends token funds to the address of the exchange, the exchange has no way to get notified about it. Therefore, the token transaction will take place in the contract function on behalf of the user. All the user has to do before calling the exchange function, is to grant the exchange permission to spend the funds on his behalf using the \texttt{approve} function from the ERC20 token standard.
+The reversed function is not equipped with the \texttt{payable} modifier, as the incoming funds are an ERC20 token. Because the funds of the ERC20 tokens are
+managed by the token itself, the exchange contract has no direct access to it. If a user sends token funds to the address of the exchange, the exchange has no
+way to get notified about it. Therefore, the token transaction will take place in the contract function on behalf of the user. All the user has to do before
+calling the exchange function, is to grant the exchange permission to spend the funds on his behalf using the \texttt{approve} function from the ERC20 token
+standard.
 
-Instead of just paying the desired amount to the exchange, the amount needs to be passed to the function as a parameter. As before, the amount is being checked if it is empty to save the gas which would be wasted when executing a swap with zero funds. After that, the exchange rate and fees will be calculated. After another safety check, the tokens will be sent from the user to the exchange and the exchange sends the Ether amount back to the user using the built-in \texttt{transfer} function.
+Instead of just paying the desired amount to the exchange, the amount needs to be passed to the function as a parameter. As before, the amount is being checked
+if it is empty to save the gas which would be wasted when executing a swap with zero funds. After that, the exchange rate and fees will be calculated. After
+another safety check, the tokens will be finally sent from the user to the exchange and the exchange sends the Ether amount back to the user using the
+built-in \texttt{transfer} function.
 
 \begin{GenericCode}
-  function swapCtnToEth(uint256 amount) public {
-    require(amount > 0, "amount cannot be 0");
-    uint256 ethAmount = amount.div(1000);
-    uint256 fees = ethAmount.mul(1).div(10);
+  function swapCtnToEth(uint256 ctnInput, uint ethOutput, uint256 fees) public {
+    require(ctnInput > 0, "amount cannot be 0");
     _addFees(fees);
-    require(getEthBalance() >= ethAmount.sub(fees), "not enough funds available");
-    _cherryToken.transferFrom(msg.sender, address(this), amount);
-    msg.sender.transfer(ethAmount);
-  }	
+    require(getEthBalance() >= ethOutput, "not enough funds available");
+    _cherryToken.transferFrom(msg.sender, address(this), ctnInput);
+    msg.sender.transfer(ethOutput);
+  }
 \end{GenericCode}
 
 \section{Testing Smart Contracts}
