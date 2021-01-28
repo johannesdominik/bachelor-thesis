@@ -281,7 +281,7 @@ before(async () => {
   // load contracts
   cherryToken = await CherryToken.new();
   cherryPool = await CherryPool.new(cherryToken.address);
-  await cherryToken.transfer(cherryPool.address, '1000000000000000000000'); // 1000 CTN
+  await cherryToken.transfer(cherryPool.address, '1000000000000000000000');
   await web3.eth.sendTransaction({ from: owner, to: cherryPool.address, value: web3.utils.toWei('1') });
 });	
 \end{GenericCode}
@@ -290,9 +290,9 @@ The actual tests are grouped together to tests that are similar to each other or
 
 \begin{GenericCode}
 describe('CherryPool deployment', async () => {
-  it('has no collected fees yet', async () => {
-    const collectedFees = await cherryPool.getCollectedFees();
-    assert.equal(web3.utils.fromWei(collectedFees), 0);
+  it('has no rewards yet', async () => {
+    const rewards = await cherryPool.getAvailableRewards();
+    assert.equal(web3.utils.fromWei(rewards), 0);
   });
 
   it('has initial Ether pool', async () => {
