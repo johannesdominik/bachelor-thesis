@@ -26,17 +26,89 @@ finds a string that generates the same hash value he can apply the real signatur
 
 \section{The Ethereum Blockchain}
 \subsection{Blockchain Fundamentals}
---- 0.5 pages ---
+Ethereum is an unbounded state machine, which consists of a globally, uniform state and a virtual machine that makes changes in that state. Blockchains like Ethereum
+consist of several components. The foundation is a decentralized peer-to-peer network around the world, where everyone can participate. The Ethereum main network, is
+after the main network of Bitcoin, the second largest peer-to-peer network. Altering the state is on a blockchain done through transactions, which play a key role in
+every blockchain. Furthermore, a set of rules needs to be applied to the network in order to reach consensus. There are currently two major consenus algorithms,
+Proof of Work and Proof of Stake, which will be discussed in section \ref{sec:storeofvalue}. The global state machine, which is in Ethereum's case the Ethereum
+Virtual Machine (EVM) uses that conensus algorithm, to process the transactions according to the defined rules. After processing them, they are grouped together to
+specific blocks and chained after each other in a public ledger. The compliance of those rules would not be possible without a game theoretical incentivization
+scheme. Of course it is impossible to enforce those rules as strictly as in any kind of centralized system. But the technology can be designed in such a way, that
+it becomes economically unfeasibly to harm the network in a critical way. For example, no one can prevent you from winning guaranteed the lottery. But the system
+is designed in such a way that it would cost a lot more buying all lottery tickets in contrast to the anticipated win.
+
+So far, these are all theoretical concepts. In order to become a real blockchain, there needs to be one or more open-source implementation of that protocol. The
+network can be as decentralized as possible, if not everyone has the opportunity to access the source code, there is still a little bit of trust involved, which
+should be minimalized in any type of decentralized system.
+
 \subsection{Clients}
---- 0.5 pages ---
+Clients are exactly those open-source implementations, which are the primary interface to the peer-to-peer network. On Ethereum, there are a lot of different
+implementations written in many different programming languages. The most popular clients are Parity, written in Rust, and Geth which is written in Go. Each client
+is able to perform certain tasks on the blockchain, depending on the needs of the user. Almost every client serves as a wallet consisting of addresses and private and
+public keys in order to have access to specific digital assets. Clients, which keep track of the entire blockchain are called full nodes. Full nodes have certain
+hardware conditions because the entire blockchain can consume a lot of memory space. They play an important role to secure the network and make it more decentralized.
+Some other implmentations can participate on the consensus algorithm to evaluated the next block, using either mining or staking. While each of these node types
+can be combined in an arbitrary order, almost every node consist at least of a basic routing functionality to connect to other nodes.
+
 \subsection{Wallets}
---- 0.5 pages ---
+Wallets are the main interfaces for an average user to interact with a blockchain. They come in a lot of different forms, varying of usability, security, platform,
+architecture and more. A common approach is to categorize them by their platforms. There can be web applications such as MyEtherWallet, browser extensions such as
+MetaMask, desktop, mobile or crossplatform applications. These types of wallets are all considered as hot wallets, since their are connected constantly to the
+internet. While this is very convenient for the user, it comes with a certain security risk, as the private key could be stolen by other people. Cold wallets,
+however, aim to keep the private key disconnected from the internet as good as possible. This could be done using small devices called hard wallets, where the private
+key never leaves the device, or through paper wallets, where the user writes down his private key on a piece of paper and stores that in a secure place.
+
+The management of the private keys can be done in two ways. The older and simpler approach is by storing the keys in a nondeterministic way, which means generating
+each private key independenly from each other based on a cryptographic random number generator. Nondeterministic wallets have certain disadvantages and should not be
+used anymore today, except for simple tests.
+
+The more modern approach are deterministic wallets, where all private keys are derived from a seed through the use of a one-way hash function. They are easy to
+backup, import and export. The seed is usually derived from mnemonic code words, which makes it possible to build up a hierarchical tree structure with child keys.
+The different branches could be logically organized for company departments or account categories. The public keys can then be generated on an untrusted server
+without having access to the private keys.
+
 \subsection{Transactions}
---- 0.5 pages ---
+Transactions are the heart of the blockchain as they are the actual data which is stored in a data block. It is important to understand that there are not real
+units of a coin stored on the blockchain. There are just discrete outputs, stored as integer values, which give people who know the private key the right to spend
+them. Transactions consist of certain inputs and certain outputs, transferring the ownership of those atomic units of value. When someone says: "A wallet received
+Ether", he just means that there is a new transaction output that can be spent with the private key of that wallet. Therefore the balance of a wallet is the sum of
+all transaction outputs for that wallet. After a transaction is signed with a private key it will be submitted into the mempool, where they wait to be included into
+a block. The first transaction of a block is a special transaction, known as the coinbase transaction. It does not consume a transaction output but pays new minted
+coins to the miners.
+
+But those are not the only incentives for miners or stakers. Each transaction can also include some transaction fees which are very important
+for the blockchain for several reasons. As mentioned before, fees compensate miners and serve as a security mechanism, making it economically infeasible for attackers
+to flood the network with transactions. As the fees are collected by that miner who mines the block which records that transaction, he will prefer transactions with
+higher fees. Therefore transactions with higher fees are always processed faster than transactions with none or low fees. Depending on the current market situation,
+it might be possible that the fees are so low, that the transaction will never be included into a block. In order to prevent that, fee estimation services calculate
+the appropriate fee, based on capacity and the fees offered by competing transactions. Fees are not stored directly in a transaction, as every additional storage
+costs money. Fees are the implicit difference between all transaction inputs and outputs.
+
 \section{Smart Contracts}
--- 0.5 pages ---
+Smart Contracts are programs that are executed by the Ethereum Virtual Machine (EVM). There are serveral programming languages that are specifically designed to
+program Smart Contracts such as Serpent, Vyper and Bamboo, but Solidity is by far the most common. Smart Contracts have some characteristics that are different from
+other programs. First of all, they only run when they are called by a transaction. A transaction can by only initiated by Externally Owned Accounts (EOAs) but both
+contract addresses and EOAs are able to accept transactions. Transactions can have either a value, data or both of them. When the data payload is set, it is very
+likely that this transaction is addressed to call a function from a smart contract. In contrast to Bitcoin, Ethereum is turing-complete, so the programming languages
+give the developer all kinds of freedom to do what they want like they are used to in other high level programming languages. While this sounds great in the first
+place, it is very vulnerable to introduce errors in the code. When dealing with applications in the Decentralized Finance sector, this is the last thing you want.
+It is not even possible to fix the errors because Smart Contracts are immutable. Once deployed to a blockchain, it stays there forever. The execution on the EVM
+is deterministic, so every user, no matter on which machine, gets the same output. Because Smart Contracts are turing-complete it would be possible to write code
+that never terminates, which costs resources of the network. In order to prevent that, the sender has to send gas fees, which pay for the execution of the Smart
+Contract. Once, the contract is out of gas, the EVM stops executing the code. Because it is very hard to predict how long turing-complete programs will run, the sender
+sets a gas limit on the transaction, stating the maximum amount of gas he is willing to pay. Any unspent gas is being transferred back to the sender.
+
 \section{Decentralized Finance}
---- 0.5 pages ---
+The financial system is cumbersome. Traditional finance in particular has still problems to adapt to the digital age. Financial institutions are slow, biogratic
+and based on a lot of trust. New online companies try to solve that problem with more automated software instead of trusted people, but they are still confined
+to the boundaries of the ecosystem. PayPal, for example, tried to create its own digital currency but the government United States of America prohibited that.
+Decentralized Finance brings the typical use cases of traditional finance into the digital world in a decentralized way. The goal is that nobody has to trust each
+other but still can do business with anyone. It should be completely without censorship, so it is open for everyone, no matter which country in the world they live
+in. And it should be more robust in terms of availability and security as there is no central party that would risk an outage of the entire system.
+
 \subsection{State of the Art}
---- 0.25 pages ---
-current applications, relevance on the market, technologies, ...
+The term and concept of Decentralized Finance is still very young, many people refer to it as an experimental form of finance. It started to arouse interest in 2019
+by a few technic enthusiastic people and became really popular in the world of digital assets in the middle of 2020. As of January 2021, there are approximately
+\$26.2 billion locked in Smart Contracts on the Ethereum network \cite{DeFiPulse}, which is by far the most popular blockchain for Decentralized Finance. Despite the
+tremendously high market dominance of Ethereum, DeFI is not confined to a single blockchan. There are already new blockchains arising that are specifically designed
+for use cases in the Decentralized Finance area like DeFiChain\cite{DeFiChain}.
