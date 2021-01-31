@@ -85,30 +85,34 @@ the appropriate fee, based on capacity and the fees offered by competing transac
 costs money. Fees are the implicit difference between all transaction inputs and outputs.
 
 \section{Smart Contracts}
-Smart Contracts are programs that are executed by the Ethereum Virtual Machine (EVM). There are serveral programming languages that are specifically designed to
-program Smart Contracts such as Serpent, Vyper and Bamboo, but Solidity is by far the most common. Smart Contracts have some characteristics that are different from
-other programs. First of all, they only run when they are called by a transaction. A transaction can by only initiated by Externally Owned Accounts (EOAs) but both
+\textit{Smart contracts} are programs that are executed by the \textit{ethereum virtual machine} (EVM). There are serveral programming languages that are specifically designed to
+program smart contracts such as \textit{Serpent}, \textit{Vyper} and \textit{Bamboo}, but \textit{Solidity} is by far the most common. Smart contracts have some characteristics that are different from
+other programs. First of all, they only run when they are called by a transaction. A transaction can by only initiated by \textit{externally owned accounts} (EOAs) but both
 contract addresses and EOAs are able to accept transactions. Transactions can have either a value, data or both of them. When the data payload is set, it is very
-likely that this transaction is addressed to call a function from a smart contract. In contrast to Bitcoin, Ethereum is turing-complete, so the programming languages
-give the developer all kinds of freedom to do what they want like they are used to in other high level programming languages. While this sounds great in the first
-place, it is very vulnerable to introduce errors in the code. When dealing with applications in the Decentralized Finance sector, this is the last thing you want.
-It is not even possible to fix the errors because Smart Contracts are immutable. Once deployed to a blockchain, it stays there forever. The execution on the EVM
-is deterministic, so every user, no matter on which machine, gets the same output. Because Smart Contracts are turing-complete it would be possible to write code
-that never terminates, which costs resources of the network. In order to prevent that, the sender has to send gas fees, which pay for the execution of the Smart
-Contract. Once, the contract is out of gas, the EVM stops executing the code. Because it is very hard to predict how long turing-complete programs will run, the sender
+likely that this transaction is addressed to call a function from a smart contract.
+
+In contrast to Bitcoin, Ethereum is turing-complete, so the programming languages
+give the developer all kinds of freedom to do what they want, like they are used to in other high level programming languages. While this sounds great in the first
+place, it is very vulnerable to introduce errors in the code. When dealing with applications in the area of \textit{decentralized finance}, this is the last thing you want.
+It is not even possible to fix the errors because smart contracts are immutable. Once deployed to a blockchain, it stays there forever. The execution on the EVM
+is deterministic, so every user, no matter on which machine, gets the same output. Because smart contracts are turing-complete it would be possible to write code
+that never terminates, which costs resources of the network. In order to prevent that, the sender has to send gas fees, which pay for the execution of the smart
+contract. Once, the contract is out of gas, the EVM stops executing the code. Because it is very hard to predict how long turing-complete programs will run, the sender
 sets a gas limit on the transaction, stating the maximum amount of gas he is willing to pay. Any unspent gas is being transferred back to the sender.
 
 \section{Decentralized Finance}
-The financial system is cumbersome. Traditional finance in particular has still problems to adapt to the digital age. Financial institutions are slow, biogratic
+The financial system is cumbersome. Traditional finance in particular has still problems to adapt to the digital age. Financial institutions are slow, biocratic
 and based on a lot of trust. New online companies try to solve that problem with more automated software instead of trusted people, but they are still confined
-to the boundaries of the ecosystem. PayPal, for example, tried to create its own digital currency but the government United States of America prohibited that.
-Decentralized Finance brings the typical use cases of traditional finance into the digital world in a decentralized way. The goal is that nobody has to trust each
+to the boundaries of the ecosystem. \textit{PayPal}, for example, tried to create its own digital currency but the government of the United States of America prohibited that.
+
+Decentralized finance (DeFi) brings the typical use cases of traditional finance into the digital world in a decentralized way. The goal is that nobody has to trust each
 other but still can do business with anyone. It should be completely without censorship, so it is open for everyone, no matter which country in the world they live
 in. And it should be more robust in terms of availability and security as there is no central party that would risk an outage of the entire system.
 
 \subsection{State of the Art}
-The term and concept of Decentralized Finance is still very young, many people refer to it as an experimental form of finance. It started to arouse interest in 2019
+The term and concept of decentralized finance is still very young, many people refer to it as an experimental form of finance. It started to arouse interest in 2019
 by a few technic enthusiastic people and became really popular in the world of digital assets in the middle of 2020. As of January 2021, there are approximately
-\$26.2 billion locked in Smart Contracts on the Ethereum network \cite{DeFiPulse}, which is by far the most popular blockchain for Decentralized Finance. Despite the
-tremendously high market dominance of Ethereum, DeFI is not confined to a single blockchan. There are already new blockchains arising that are specifically designed
-for use cases in the Decentralized Finance area like DeFiChain\cite{DeFiChain}.
+\$26.2 billion locked in smart contracts on the Ethereum network \cite{DeFiPulse}, which is by far the most popular blockchain for decentralized finance. Despite the
+tremendously high market dominance of Ethereum, DeFi is not confined to a single blockchain. There are already new blockchains arising that are specifically designed
+for use cases in the decentralized finance area like DeFiChain \cite{DeFiChain}.
+
