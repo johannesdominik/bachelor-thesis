@@ -257,26 +257,26 @@ Testing plays a crucial part in the development of decentralized applications. O
 As a developer, you have the choice to write tests natively in Solidity, or using an arbitrary testing framework based on JavaScript. When working with Truffle, the testing framework Mocha\cite{Mocha} and the assertion library Chai\cite{Chai} are preinstalled as the default. All tests that are in the testing subdirectory, will be executed using the command \texttt{truffle test}.
 
 At the top of each test file, the artifacts of the used smart contracts, as well as Chai, need to be imported:
-\begin{GenericCode}
+\begin{JsCode}
 const CherryPool = artifacts.require('CherryPool');
 const CherryToken = artifacts.require('CherryToken');
 
 require('chai')
   .use(require('chai-as-promised'))
   .should();	
-\end{GenericCode}
+\end{JsCode}
 
 The specific tests are to be implemented in a contract block, which takes two parameters: The name of the tested contract and an array of test accounts as parameters. As the first account is used to deploy the contract, it is labelled as the contract owner.
 
-\begin{GenericCode}
+\begin{JsCode}
 contract('CherryPool', ([owner, user]) => {
 	// tests are here
 }	
-\end{GenericCode}
+\end{JsCode}
 
 While the contract compilation takes place before the tests are being executed, the smart contracts still need to be instantiated. This can be done using a \texttt{before} block, where all initialization tasks for the tests take place:
 
-\begin{GenericCode}
+\begin{JsCode}
 before(async () => {
   // load contracts
   cherryToken = await CherryToken.new();
@@ -284,11 +284,11 @@ before(async () => {
   await cherryToken.transfer(cherryPool.address, '1000000000000000000000');
   await web3.eth.sendTransaction({ from: owner, to: cherryPool.address, value: web3.utils.toWei('1') });
 });	
-\end{GenericCode}
+\end{JsCode}
 
 The actual tests are grouped together to tests that are similar to each other or that test the same functionality into \texttt{describe} and \texttt{it} blocks for the concrete unit tests. The estimated results of the test can be checkt with assertions or by appending \texttt{should.be.rejected} to a function call.
 
-\begin{GenericCode}
+\begin{JsCode}
 describe('CherryPool deployment', async () => {
   it('has no rewards yet', async () => {
     const rewards = await cherryPool.getAvailableRewards();
@@ -305,14 +305,14 @@ describe('CherryPool deployment', async () => {
     assert.equal(web3.utils.fromWei(ctnBalance), 1000);
   });
 });
-\end{GenericCode}
+\end{JsCode}
 
 \section{Connecting Smart Contracts to Web Applications}
 The connection between the web frontend and the smart contracts is done using the JavaScript framework Web3\cite{Web3}, which is maintained by the Ethereum core team. It contains a lot of useful utility functions as seen before such as \texttt{web3.eth.sendTransaction()} for making transaction or \texttt{web3.utils.fromWei()} to convert a number from wei into Ether.
 
 When the user wants to connect to a wallet, Web3 needs to determine the network provider first. Once detected, a new instance of Web3 will be instantiated and is ready for use.
 
-\begin{GenericCode}
+\begin{JsCode}
 function loadWeb3() {
   if ((window as any).ethereum) {
     (window as any).web3 = new Web3((window as any).ethereum);
@@ -326,11 +326,11 @@ function loadWeb3() {
   window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!');
   return false;
 }	
-\end{GenericCode}
+\end{JsCode}
 
 The accounts array can be accessed via \texttt{web3.eth.getAccounts()} and the network id is retrieved using \texttt{web3.net.getId()}. Each contract can be instantiated afterwards based on the compilation artifacts. In addition to the tests, the correct network needs to selected first.
 
-\begin{GenericCode}
+\begin{JsCode}
 const cherryPoolData = (CherryPool as any).networks[networkId];
 if (cherryPoolData) {
   cherryPool = new web3.eth.Contract((CherryPool as any).abi, cherryPoolData.address);
@@ -338,25 +338,25 @@ if (cherryPoolData) {
   alert('CherryPool contract not deployed to detected network!');
   return null;
 }	
-\end{GenericCode}
+\end{JsCode}
 
 After these steps, the API is ready to be used by any UI component. Smart contract functions can be invoked using \texttt{call()} or \texttt{send()}. The function \texttt{call()} is used if the function does not alter the state of the blockchain. A typical use case for that is retreiving an account balance:
 
-\begin{GenericCode}
+\begin{JsCode}
 account.cherryToken.methods.balanceOf(account.address).call().then((ctnBalance: number) => {
   setCherryTokenBalance(web3.utils.fromWei(ctnBalance.toString()));
 });
           
-\end{GenericCode}
+\end{JsCode}
 
 If a feature needs to alter the state of the blockchain, the function \texttt{send()} needs to be used. As every state modification costs gas, this will usually lead to a confirmation dialog provided by the wallet of the user. Typical use cases for that are adding liquidity, exchanging assets or approving funds for other accounts:
 
-\begin{GenericCode}
+\begin{JsCode}
 account.cherryToken.methods.approve(
   account.cherryPool._address,
   web3.utils.toWei(ctnToSupply.toString())
 ).send({ from: account.address }).then();	
-\end{GenericCode}
+\end{JsCode}
 
 
 \section{Smart Contract Deployment}
