@@ -3,35 +3,34 @@
 
 \section{Cryptography}
 
-The term \textit{cryptocurrency} already suggests, that blockchains rely heavily on cryptography. But cryptography is an even broader topic and exceeds by far the ranges of blockchains, cryptocurrencies and decentralization. Without crytography, our digital life would be very different today. Cryptography is the theory of data encryption, which means "secret writing" in Greek. Together with cryptoanalysis, which is the opposite (decoding data), cryptographic can be conflated as cryptology. Cryptography makes it possible to make data content unreadable for specific people, detect unauthorized data manipulation and guarantee the authenticity of a communication parter. What cryptography cannot achieve, is prevention of unauthorized data manipulation and the prevention that data is being read at all.
+The term \textit{cryptocurrency} already suggests, that blockchains rely heavily on cryptography. But cryptography is an even broader topic and exceeds by far the ranges of blockchains, cryptocurrencies and decentralization. Without crytography, our digital life would be very different today. Cryptography is the theory of data encryption, which means "secret writing" in Greek. Together with cryptoanalysis, which is the opposite (decoding data), cryptographic can be conflated as cryptology. Cryptography makes it possible to make data content unreadable for specific people, detect unauthorized data manipulation and guarantee the authenticity of a communication parter. What cryptography cannot achieve, is prevention of unauthorized data manipulation and the prevention that data is being read at all \cite[pp. 10-11]{Schmeh2007}.
 
 \subsection{Public Key Cryptography}
-Public key cryptography are asymmetrical encryption methods that utilize both private and public keys. While symmetrical enryption methods such as the Data Encryption Standard (DES) and Advanced Encryption Standard (AES) use a single key to encrypt and decrypt a message, asymmetrical encryption methods use the public key of the recipient to decrypt the message and a private key to enrypt it. At the first glance it may seem that asymmetrical enryption methods are way better than symmetrical encryption methods and that they should be used all the time. But that is not the case. Asymmetrical encryption methods are less secure, more complex, more difficult to invent and slower than symmetrical encryption methods. Each type of encryption method has its own use cases so they actually complement each other. While symmetrical encryption methods are really good at encrypting data content, asymmetrical enryption methods are used to exchange the symmetrical keys and prove ownership and authenticity through digital signatures.
+Public key cryptography are specific asymmetrical encryption methods that utilize both private and public keys. While symmetrical enryption methods such as the \textit{Data Encryption Standard} (DES) and \textit{Advanced Encryption Standard} (AES) use a single key to encrypt and decrypt a message, asymmetrical encryption methods use the public key of the recipient to decrypt the message and a private key to enrypt it. At the first glance, it may seem that asymmetrical enryption methods are way better than symmetrical encryption methods and that they should be used all the time. But that is not the case. Asymmetrical encryption methods are less secure, more complex, more difficult to invent and slower than symmetrical encryption methods \cite[p. 172]{Schmeh2007}. Each type of encryption method has its own use cases so they actually complement each other. While symmetrical encryption methods are really good at encrypting data content, asymmetrical enryption methods are used to exchange the symmetrical keys and prove ownership and authenticity through digital signatures.
 
-The most popular asymmetric enryption methods are RSA (Rivest, Shamii, Adelman), Diffie-Hellman and elliptic curve cryptography. RSA and Diffie-Hellman are the most common algorithms outside of the blockchain ecosystem and are used for example in banking, telecommunications and ecommerce. Because those are not used by blockchain technologies, we will focus on elliptic curve cryptography.
+The most popular asymmetric enryption methods are \textit{RSA} \footnote{acronym for its founders Rivest, Shamii, Adelman}, \textit{Diffie-Hellman} and \textit{elliptic curve cryptography}. RSA and Diffie-Hellman are the most common algorithms outside of the blockchain ecosystem and are used for example in banking, telecommunications and ecommerce. Because those are not used by blockchain technologies, we will focus on elliptic curve cryptography.
 \subsection{Elliptic Curve Cryptography}
-Elliptic Curve Cryptography is an asymmetric cryptographic algorithm, which is a lot more difficult to compute than RSA and Diffie-Hellman. Both Bitcoin and
-Ethereum use the secp256k1 algorithm, which uses a 256 bit length. An elliptic curve is the visualization of a prime order, which is nothing else than a set of
-points in a two dimensional coordinate system. An elliptic curve makes it possible to calculate a third point, by connecting two random points on the elliptic
+Elliptic curve cryptography is an asymmetric cryptographic algorithm, which is a lot more difficult to compute than RSA and Diffie-Hellman. Both Bitcoin and
+Ethereum use the secp256k1 algorithm, which uses a 256 bit length \cite{secp256k1}. An elliptic curve is the visualization of a prime order, which is nothing else than a set of
+points in a two dimensional coordinate system. This makes it possible to calculate a third point, by connecting two random points on the elliptic
 curve with each other. This works everytime, except when the two points are completely vertical to each other. By multiplicating a randomly generated private key
-with a specific point on the elliptic curve, the generator point, it is possible to create all points on the elliptic curve in an unforeseen way. The result is the
-public key, consisting of a prefix, the x and the y coordinate.
+with a specific point on the elliptic curve, the generator point, it is possible to create all points on the elliptic curve in an unforeseen way. The result of such a calculation is the public key, consisting of a prefix, the x and the y coordinate.
 
 \subsection{Hashing Functions}
 A hashing function maps a string of arbitrary size to a value of fixed size. But not all hashing functions are suitable for cryptographic problems. 
 A good hashing function aims to have as few collisions as possible. A collision occurs when two different input strings lead to the same output hash.
 In order to prevent that as good as possible, each hash value should occur equally and a minimal modification of the input string should lead to a
 completely new hash value. This is important because the more collisions occur, the more vulnerable is the hashing function for hackers. If a hacker
-finds a string that generates the same hash value he can apply the real signature to his faked text \cite{Schmeh2007}.
+finds a string that generates the same hash value he can apply the real signature to his faked text \cite[pp. 200-201]{Schmeh2007}.
 
 \section{The Ethereum Blockchain}
 \subsection{Blockchain Fundamentals}
 Ethereum is an unbounded state machine, which consists of a globally, uniform state and a virtual machine that makes changes in that state. Blockchains like Ethereum
-consist of several components. The foundation is a decentralized peer-to-peer network around the world, where everyone can participate. The Ethereum main network, is
-after the main network of Bitcoin, the second largest peer-to-peer network. Altering the state is on a blockchain done through transactions, which play a key role in
-every blockchain. Furthermore, a set of rules needs to be applied to the network in order to reach consensus. There are currently two major consenus algorithms,
-Proof of Work and Proof of Stake, which will be discussed in section \ref{sec:storeofvalue}. The global state machine, which is in Ethereum's case the Ethereum
-Virtual Machine (EVM) uses that conensus algorithm, to process the transactions according to the defined rules. After processing them, they are grouped together to
+consist of several components. The foundation is a decentralized peer-to-peer network around the world, where everyone can participate. The Ethereum main network is the second largest peer-to-peer network \footnote{after the main network of Bitcoin}. Altering the state is done on a blockchain through transactions, which play a key role in
+every blockchain. Furthermore, a set of rules needs to be applied to the network in order to reach consensus.
+
+There are currently two major consenus algorithms,
+\textit{proof-of-work} (PoW) and \textit{proof-of-stake} (PoS), which will be discussed in section \ref{sec:storeofvalue}. The global state machine, which is in Ethereum's case the \textit{ethereum virtual machine} (EVM), uses that consensus algorithm, to process the transactions according to the defined rules. After processing them, they are grouped together to
 specific blocks and chained after each other in a public ledger. The compliance of those rules would not be possible without a game theoretical incentivization
 scheme. Of course it is impossible to enforce those rules as strictly as in any kind of centralized system. But the technology can be designed in such a way, that
 it becomes economically unfeasibly to harm the network in a critical way. For example, no one can prevent you from winning guaranteed the lottery. But the system
@@ -43,22 +42,24 @@ should be minimalized in any type of decentralized system.
 
 \subsection{Clients}
 Clients are exactly those open-source implementations, which are the primary interface to the peer-to-peer network. On Ethereum, there are a lot of different
-implementations written in many different programming languages. The most popular clients are Parity, written in Rust, and Geth which is written in Go. Each client
+implementations written in many different programming languages. The most popular clients are \textit{Parity} \cite{Parity}, written in \textit{Rust}, and \textit{Geth} \cite{Geth} which is written in \textit{Go}. Each client
 is able to perform certain tasks on the blockchain, depending on the needs of the user. Almost every client serves as a wallet consisting of addresses and private and
-public keys in order to have access to specific digital assets. Clients, which keep track of the entire blockchain are called full nodes. Full nodes have certain
+public keys in order to have access to specific digital assets.
+
+Clients, which keep track of the entire blockchain are called full nodes. Full nodes have certain
 hardware conditions because the entire blockchain can consume a lot of memory space. They play an important role to secure the network and make it more decentralized.
-Some other implmentations can participate on the consensus algorithm to evaluated the next block, using either mining or staking. While each of these node types
-can be combined in an arbitrary order, almost every node consist at least of a basic routing functionality to connect to other nodes.
+Some other implmentations can participate on the consensus algorithm to evaluated the next block, using either mining (PoW) or staking (PoS). While each of these node types
+can be combined in an arbitrary order, almost every node consists at least of a basic routing functionality to connect to other nodes.
 
 \subsection{Wallets}
-Wallets are the main interfaces for an average user to interact with a blockchain. They come in a lot of different forms, varying of usability, security, platform,
-architecture and more. A common approach is to categorize them by their platforms. There can be web applications such as MyEtherWallet, browser extensions such as
-MetaMask, desktop, mobile or crossplatform applications. These types of wallets are all considered as hot wallets, since their are connected constantly to the
-internet. While this is very convenient for the user, it comes with a certain security risk, as the private key could be stolen by other people. Cold wallets,
+Wallets are the main interfaces for an average user to interact with a blockchain. They come in a lot of different forms, varying of usability, security, supported platforms,
+architecture and more. A common approach is to categorize them by their platforms. There can be web applications such as \textit{MyEtherWallet}, browser extensions such as
+\textit{MetaMask}, desktop, mobile or cross-platform applications. These types of wallets are all considered as \textit{hot wallets}, since they are constantly connected to the
+internet. While this is very convenient for the user, it comes with a certain security risk, as the private key could be stolen by other people. \textit{Cold wallets},
 however, aim to keep the private key disconnected from the internet as good as possible. This could be done using small devices called hard wallets, where the private
 key never leaves the device, or through paper wallets, where the user writes down his private key on a piece of paper and stores that in a secure place.
 
-The management of the private keys can be done in two ways. The older and simpler approach is by storing the keys in a nondeterministic way, which means generating
+The management of the private keys can be done in two ways. The older and easier approach is by storing the keys in a nondeterministic way, which means generating
 each private key independenly from each other based on a cryptographic random number generator. Nondeterministic wallets have certain disadvantages and should not be
 used anymore today, except for simple tests.
 
@@ -68,18 +69,17 @@ The different branches could be logically organized for company departments or a
 without having access to the private keys.
 
 \subsection{Transactions}
-Transactions are the heart of the blockchain as they are the actual data which is stored in a data block. It is important to understand that there are not real
-units of a coin stored on the blockchain. There are just discrete outputs, stored as integer values, which give people who know the private key the right to spend
+Transactions are the heart of the blockchain as they are the actual data which is stored in a data block. It is important to understand, that there are not real
+units of a coin stored on the blockchain. There are just discrete outputs, stored as integer values, which give people who own the private key the right to spend
 them. Transactions consist of certain inputs and certain outputs, transferring the ownership of those atomic units of value. When someone says: "A wallet received
-Ether", he just means that there is a new transaction output that can be spent with the private key of that wallet. Therefore the balance of a wallet is the sum of
-all transaction outputs for that wallet. After a transaction is signed with a private key it will be submitted into the mempool, where they wait to be included into
-a block. The first transaction of a block is a special transaction, known as the coinbase transaction. It does not consume a transaction output but pays new minted
-coins to the miners.
+Ether", he just means that there is a new transaction output that can be spent with the private key of that wallet. Therefore, the balance of a wallet is the sum of
+all transaction outputs for that wallet. After a transaction is signed with a private key, it will be submitted into the mempool, where they wait to be included into
+a block. The first transaction of a block is a special transaction, known as the \textit{coinbase transaction}. It does not consume a transaction output but pays new minted coins to the miners or stakers.
 
 But those are not the only incentives for miners or stakers. Each transaction can also include some transaction fees which are very important
-for the blockchain for several reasons. As mentioned before, fees compensate miners and serve as a security mechanism, making it economically infeasible for attackers
-to flood the network with transactions. As the fees are collected by that miner who mines the block which records that transaction, he will prefer transactions with
-higher fees. Therefore transactions with higher fees are always processed faster than transactions with none or low fees. Depending on the current market situation,
+for the blockchain for several reasons. As mentioned before, fees compensate miners or stakers and serve as a security mechanism, making it economically infeasible for attackers
+to flood the network with transactions. As the fees are collected by that miner or staker who verifies the block which records that transaction, he will prefer transactions with
+higher fees. Therefore, transactions with higher fees are always processed faster than transactions with none or low fees. Depending on the current market situation,
 it might be possible that the fees are so low, that the transaction will never be included into a block. In order to prevent that, fee estimation services calculate
 the appropriate fee, based on capacity and the fees offered by competing transactions. Fees are not stored directly in a transaction, as every additional storage
 costs money. Fees are the implicit difference between all transaction inputs and outputs.
