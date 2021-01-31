@@ -3,17 +3,17 @@
 
 \section{Cryptography}
 
-The term \textit{cryptocurrency} already suggests, that blockchains rely heavily on cryptography. But cryptography is an even broader topic and exceeds by far the ranges of blockchains, cryptocurrencies and decentralization. Without crytography, our digital life would be very different today. Cryptography is the theory of data encryption, which means "secret writing" in Greek. Together with cryptoanalysis, which is the opposite (decoding data), cryptographic can be conflated as cryptology. Cryptography makes it possible to make data content unreadable for specific people, detect unauthorized data manipulation and guarantee the authenticity of a communication parter. What cryptography cannot achieve, is prevention of unauthorized data manipulation and the prevention that data is being read at all \cite[pp. 10-11]{Schmeh2007}.
+The term \textit{cryptocurrency} already suggests, that blockchains rely heavily on cryptography. But cryptography is an even broader topic and exceeds by far the ranges of blockchains, cryptocurrencies and decentralization. Without cryptography, our digital life would be very different today. Cryptography is the theory of data encryption, which means "secret writing" in Greek. Together with cryptoanalysis, which is the opposite (decoding data), cryptographic can be conflated as cryptology. Cryptography makes it possible to make data content unreadable for specific people, detect unauthorized data manipulation and guarantee the authenticity of a communication parter. What cryptography cannot achieve, is prevention of unauthorized data manipulation and the prevention that data is being read at all \cite[pp. 10-11]{Schmeh2007}.
 
 \subsection{Public Key Cryptography}
-Public key cryptography are specific asymmetrical encryption methods that utilize both private and public keys. While symmetrical enryption methods such as the \textit{Data Encryption Standard} (DES) and \textit{Advanced Encryption Standard} (AES) use a single key to encrypt and decrypt a message, asymmetrical encryption methods use the public key of the recipient to decrypt the message and a private key to enrypt it. At the first glance, it may seem that asymmetrical enryption methods are way better than symmetrical encryption methods and that they should be used all the time. But that is not the case. Asymmetrical encryption methods are less secure, more complex, more difficult to invent and slower than symmetrical encryption methods \cite[p. 172]{Schmeh2007}. Each type of encryption method has its own use cases so they actually complement each other. While symmetrical encryption methods are really good at encrypting data content, asymmetrical enryption methods are used to exchange the symmetrical keys and prove ownership and authenticity through digital signatures.
+Public key cryptography are specific asymmetrical encryption methods that utilize both private and public keys. While symmetrical encryption methods such as the \textit{Data Encryption Standard} (DES) and \textit{Advanced Encryption Standard} (AES) use a single key to encrypt and decrypt a message, asymmetrical encryption methods use the public key of the recipient to decrypt the message and a private key to encrypt it. At the first glance, it may seem that asymmetrical encryption methods are way better than symmetrical encryption methods and that they should be used all the time. But that is not the case. Asymmetrical encryption methods are less secure, more complex, more difficult to invent and slower than symmetrical encryption methods \cite[p. 172]{Schmeh2007}. Each type of encryption method has its own use cases so they actually complement each other. While symmetrical encryption methods are really good at encrypting data content, asymmetrical enryption methods are used to exchange the symmetrical keys and prove ownership and authenticity through digital signatures.
 
-The most popular asymmetric enryption methods are \textit{RSA} \footnote{acronym for its founders Rivest, Shamii, Adelman}, \textit{Diffie-Hellman} and \textit{elliptic curve cryptography}. RSA and Diffie-Hellman are the most common algorithms outside of the blockchain ecosystem and are used for example in banking, telecommunications and ecommerce. Because those are not used by blockchain technologies, we will focus on elliptic curve cryptography.
+The most popular asymmetric encryption methods are \textit{RSA} \footnote{acronym for its founders Rivest, Shamii, Adelman}, \textit{Diffie-Hellman} and \textit{elliptic curve cryptography}. RSA and Diffie-Hellman are the most common algorithms outside of the blockchain ecosystem and are used for example in banking, telecommunications and e-commerce. Because those are not used by blockchain technologies, we will focus on elliptic curve cryptography.
 \subsection{Elliptic Curve Cryptography}
 Elliptic curve cryptography is an asymmetric cryptographic algorithm, which is a lot more difficult to compute than RSA and Diffie-Hellman. Both Bitcoin and
-Ethereum use the secp256k1 algorithm, which uses a 256 bit length \cite{secp256k1}. An elliptic curve is the visualization of a prime order, which is nothing else than a set of
+Ethereum use the \textit{secp256k1} algorithm, which uses a 256 bit length \cite{secp256k1}. An elliptic curve is the visualization of a prime order, which is nothing else than a set of
 points in a two dimensional coordinate system. This makes it possible to calculate a third point, by connecting two random points on the elliptic
-curve with each other. This works everytime, except when the two points are completely vertical to each other. By multiplicating a randomly generated private key
+curve with each other. This works every time, except when the two points are completely vertical to each other. By multiplying a randomly generated private key
 with a specific point on the elliptic curve, the generator point, it is possible to create all points on the elliptic curve in an unforeseen way. The result of such a calculation is the public key, consisting of a prefix, the x and the y coordinate.
 
 \subsection{Hashing Functions}
@@ -29,7 +29,7 @@ Ethereum is an unbounded state machine, which consists of a globally, uniform st
 consist of several components. The foundation is a decentralized peer-to-peer network around the world, where everyone can participate. The Ethereum main network is the second largest peer-to-peer network \footnote{after the main network of Bitcoin}. Altering the state is done on a blockchain through transactions, which play a key role in
 every blockchain. Furthermore, a set of rules needs to be applied to the network in order to reach consensus.
 
-There are currently two major consenus algorithms,
+There are currently two major consensus algorithms,
 \textit{proof-of-work} (PoW) and \textit{proof-of-stake} (PoS), which will be discussed in section \ref{sec:storeofvalue}. The global state machine, which is in Ethereum's case the \textit{ethereum virtual machine} (EVM), uses that consensus algorithm, to process the transactions according to the defined rules. After processing them, they are grouped together to
 specific blocks and chained after each other in a public ledger. The compliance of those rules would not be possible without a game theoretical incentivization
 scheme. Of course it is impossible to enforce those rules as strictly as in any kind of centralized system. But the technology can be designed in such a way, that
@@ -60,7 +60,7 @@ however, aim to keep the private key disconnected from the internet as good as p
 key never leaves the device, or through paper wallets, where the user writes down his private key on a piece of paper and stores that in a secure place.
 
 The management of the private keys can be done in two ways. The older and easier approach is by storing the keys in a nondeterministic way, which means generating
-each private key independenly from each other based on a cryptographic random number generator. Nondeterministic wallets have certain disadvantages and should not be
+each private key independently from each other based on a cryptographic random number generator. Nondeterministic wallets have certain disadvantages and should not be
 used anymore today, except for simple tests.
 
 The more modern approach are deterministic wallets, where all private keys are derived from a seed through the use of a one-way hash function. They are easy to
@@ -85,7 +85,7 @@ the appropriate fee, based on capacity and the fees offered by competing transac
 costs money. Fees are the implicit difference between all transaction inputs and outputs.
 
 \section{Smart Contracts}
-\textit{Smart contracts} are programs that are executed by the \textit{ethereum virtual machine} (EVM). There are serveral programming languages that are specifically designed to
+\textit{Smart contracts} are programs that are executed by the \textit{ethereum virtual machine} (EVM). There are several programming languages that are specifically designed to
 program smart contracts such as \textit{Serpent}, \textit{Vyper} and \textit{Bamboo}, but \textit{Solidity} is by far the most common. Smart contracts have some characteristics that are different from
 other programs. First of all, they only run when they are called by a transaction. A transaction can by only initiated by \textit{externally owned accounts} (EOAs) but both
 contract addresses and EOAs are able to accept transactions. Transactions can have either a value, data or both of them. When the data payload is set, it is very
@@ -101,7 +101,7 @@ contract. Once, the contract is out of gas, the EVM stops executing the code. Be
 sets a gas limit on the transaction, stating the maximum amount of gas he is willing to pay. Any unspent gas is being transferred back to the sender.
 
 \section{Decentralized Finance}
-The financial system is cumbersome. Traditional finance in particular has still problems to adapt to the digital age. Financial institutions are slow, biocratic
+The financial system is cumbersome. Traditional finance in particular has still problems to adapt to the digital age. Financial institutions are slow, bureaucratic
 and based on a lot of trust. New online companies try to solve that problem with more automated software instead of trusted people, but they are still confined
 to the boundaries of the ecosystem. \textit{PayPal}, for example, tried to create its own digital currency but the government of the United States of America prohibited that.
 

@@ -1,26 +1,26 @@
 \chapter{Design and Architecture}
 \label{cha:DesignArchitecture}
 
-This chapter builds on top of the concepts and use cases of the previous chapters and lays out the architecture and design of a typical decentralized application by using a more practical approach. After a short introduction into the used technologies there will be a detailed view on each important part of a modern decentralized web application. To keep this chapter more concise, only selected code snippets will be shown to describe certain aspects. However, the entire code base of the working application can be found on GitHub \cite{CherryPool}.
+This chapter builds on top of the concepts and use cases of the previous chapters and lays out the architecture and design of a typical decentralized application by using a more practical approach. After a short introduction into the used technologies there will be a detailed view on each important part of a modern decentralized web application. To keep this chapter more concise, only selected code snippets will be shown to describe certain aspects. However, the entire code base of the working application can be found on \textit{GitHub} \cite{CherryPool}.
 
 \section{Technology Stack}
 \subsection{Solidity}
-The main components of decentralized web applications are Smart Contracts. Smart Contracts can be written in a few different programming languages such as LLL, Serpent, Solidity, Vyper and Bamboo. Solidity is by far the most popular and currently the de-facto standard in writing Smart Contracts \cite{AntonopoulosWood2018}. Solidity is statically typed, has a JavaScript-like syntax and supports various popular programming concepts such as libraries and inheritance \cite{SolidityDocumentation}. Because there are no classes in Solidity, it is considered not as an object-oriented but as a contract-oriented language \cite{Solidity}.
+The main components of decentralized web applications are smart contracts. Smart contracts can be written in a few different programming languages such as \textit{LLL}, \textit{Serpent}, \textit{Solidity}, \textit{Vyper} and \textit{Bamboo}. Solidity is by far the most popular and currently the de-facto standard in writing smart contracts \cite{AntonopoulosWood2018}. Solidity is statically typed, has a JavaScript-like syntax and supports various popular programming concepts such as libraries and inheritance \cite{SolidityDocumentation}. Because there are no classes in Solidity, it is considered not as an object-oriented but as a contract-oriented language \cite{Solidity}.
 
 \subsection{Truffle}
-Truffle is a development environment which helps to develop decentralized applications on the Ethereum Virtual Machine \cite{Truffle}. It handles all the difficult parts starting from Smart Contract compilation, testing, linking, deployment and continuous integration. When developing more than just some simple Smart Contracts, Truffle is an important tool to save a lot of time.
+Truffle is a development environment which helps to develop decentralized applications on the EVM \cite{Truffle}. It handles all the difficult parts starting from smart contract compilation, testing, linking, deployment and continuous integration. When developing more than just some simple Smart Contracts, Truffle is an important tool to save a lot of time.
 
 \subsection{Ganache}
-Because testing a decentralized application on the main Ethereum network would not be a good idea (and is expensive too), some sort of testing blockchain is needed. Ganache is a local blockchain for developers which provides everything to test a decentralized applications on the local machine \cite{Ganache}. It offers accounts with fake ether and works really well with Truffle, which is built by the same developers.
+Because testing a decentralized application on the main Ethereum network would not be a good idea (and is expensive too), some sort of testing blockchain is needed. \textit{Ganache} is a local blockchain for developers which provides everything to test a decentralized applications on the local machine \cite{Ganache}. It offers accounts with fake ether and works really well with Truffle, which is built by the same developers.
 
 \subsection{Web3}
-In order to link Smart Contracts to a graphical user interface such as a web client application, web3.js comes into play. It is a JavaScript library and provides all the necessary APIs in order to connect a blockchain backend to a web frontend \cite{Web3}. It also manages connections to specific wallet providers such as MetaMask.
+In order to link smart contracts to a graphical user interface such as a web client application, web3.js comes into play. It is a JavaScript library and provides all the necessary APIs in order to connect a blockchain backend to a web frontend \cite{Web3}. It also manages connections to specific wallet providers such as \textit{MetaMask}.
 
 \subsection{Mocha \& Chai}
-Testing plays in blockchain development an even bigger role than in software development in general, because deployed Smart Contracts are immutable and bugs literally cost money. A flawed function with causes an endless loop whould burn the entire gas that was available for that function call without doing anything useful. Mocha is a JavaScript testing framework which makes it possible to test the functionality of each Smart Contract in a structured and automated way \cite{Mocha}. Together with the assertion library Chai \cite{Chai} and the integration into Truffle, Mocha releases its full potential as a fully fledged blockchain testing environment.
+Testing plays in blockchain development an even bigger role than in software development in general, because deployed smart contracts are immutable and bugs literally cost money. A flawed function with causes an endless loop would burn the entire gas that was available for that function call without doing anything useful. \textit{Mocha} is a JavaScript testing framework which makes it possible to test the functionality of each smart contract in a structured and automated way \cite{Mocha}. Together with the assertion library \textit{Chai} \cite{Chai} and the integration into Truffle, Mocha releases its full potential as a fully fledged blockchain testing environment.
 
 \subsection{React}
-What would be the best Smart Contract without a graphical user interfaces which gives people the opportunity to interact with the blockchain in an easy and intuitive way. React is a JavaScript library for building user interfaces for the web and by far the most popular web framework out there \cite{React}. React is super fast because it uses a virtual DOM and provides the user a modern and intuitive experience.
+What would be the best smart contract without a graphical user interfaces which gives people the opportunity to interact with the blockchain in an easy and intuitive way. \textit{React} is a JavaScript library for building user interfaces for the web and by far the most popular web framework out there \cite{React}. React is super fast because it uses a virtual DOM and provides the user a modern and intuitive experience.
 
 \subsection{TypeScript}
 While other frontend frameworks such as Angular come with TypeScript out of the box, you have to add additional dependencies in React yourself. When it comes to larger projects or whenever bugs could become expensive, it is a good idea to introduce some kind of type checking in JavaScript. TypeScript is a superset of JavaScript and helps to detect errors before they occur at runtime \cite{TypeScript}. In financial applications like this, there is usually an even higher focus on reliable, bug-free code.
@@ -49,10 +49,10 @@ library SafeMath {
 
 \section{The ERC20 Token Standard}
 \label{sec:ERC20}
-The ERC20 standard makes it possible to build standardized tokens on the Ethereum protocol which can be integrated into the existing ecosystem \cite{ERC20}. This is achieved through a common interface each token needs to implement. The standard was initially introduced in 2015 as an Ethereum Request for Comments (ERC). It received its name due to the automatic issue assignment on Github, which had the issue number 20 \cite{AntonopoulosWood2018, BadrHorrocksWu2018}.
+The ERC20 standard makes it possible to build standardized tokens on the Ethereum protocol which can be integrated into the existing ecosystem \cite{ERC20}. This is achieved through a common interface each token needs to implement. The standard was initially introduced in 2015 as an \textit{Ethereum Request for Comments} (ERC). It received its name due to the automatic issue assignment on Github, which had the issue number 20 \cite{AntonopoulosWood2018, BadrHorrocksWu2018}.
 
 \subsection{Example Implementation}
-The function \texttt{totalSupply} returns the maximum amount available of this token in \textit{wei}, the smallest unit possible. The supply can be either static or dynamic. In this case, it is static assigned through the constructor when the smart Contract is created. The return type is a 256 bit unsigned integer which is the most common data type in Solidity.
+The function \texttt{totalSupply} returns the maximum amount available of this token in \textit{wei}, the smallest unit possible. The supply can be either static or dynamic. In this case, it is static assigned through the constructor when the smart contract is created. The return type is a 256 bit unsigned integer which is the most common data type in Solidity.
 
 \begin{GenericCode}
  uint256 private _totalSupply;
@@ -72,7 +72,7 @@ Each token is responsible to keep track of all addresses holding that token. Thi
  }
 \end{GenericCode}
 
-The functionality of sending tokens to a specific address is implemented in the \texttt{transfer} function. It takes an address and an amount as parameters and returns a boolean if the transaction was successful. The \texttt{require} function checks for a specific condition to be true. If this is not the case, the function will be reverted and all the gas goes back to the sender, which can be evaluated in Solidity using \texttt{msg.sender}. In order to prevent over- or underflow errors when performing additions and subtractions, a small library \texttt{SafeMath} \ref{prog:SafeMath} is being utilized. If everything worked well, the \texttt{Transfer} event will be emitted.
+The functionality of sending tokens to a specific address is implemented in the \texttt{transfer} function. It takes an address and an amount as parameters and returns a boolean if the transaction was successful. The \texttt{require} function checks for a specific condition to be true. If this is not the case, the function will be reverted and all the gas goes back to the sender, which can be evaluated in Solidity using \texttt{msg.sender}. In order to prevent over- or underflow errors when performing additions and subtractions, a small library \texttt{SafeMath} (program \ref{prog:SafeMath}) is being utilized. If everything worked well, the \texttt{Transfer} event will be emitted.
 
 \begin{GenericCode}
 function transfer(address _to, uint256 _value) public returns (bool success) {
@@ -84,7 +84,7 @@ function transfer(address _to, uint256 _value) public returns (bool success) {
 }
 \end{GenericCode}
 
-The function \texttt{transferFrom} is very similar to \texttt{transfer} with the only difference that the caller is not the one who sends the tokens. This is usually not a physical person but rather a Smart Contract of a decentralized application. Tokens can be sent only on behalf of someone else if the sender accepts the amount first. All funds that are already released for transactions are stored in another mapping specifying for each address which addresses are enabled to send what amount.
+The function \texttt{transferFrom} is very similar to \texttt{transfer} with the only difference that the caller is not the one who sends the tokens. This is usually not a physical person but rather a smart contract of a decentralized application. Tokens can be sent only on behalf of someone else if the sender accepts the amount first. All funds that are already released for transactions are stored in another mapping specifying for each address which addresses are enabled to send what amount.
 
 \begin{GenericCode}
 mapping(address => mapping(address => uint256)) private allowed;
@@ -124,16 +124,16 @@ event Approval(address indexed _owner, address indexed _spender, uint256 _value)
 
 \section{Liquidity Pool Implementation}
 There are a few different approaches on how to implement a lending functionality. One possibility would be the utilization of collateral like it is
-done by Maker\cite{MakerDAO2021}. However, this section will describe how to implement a lending application using liquidity pools as it builds the
-foundation for decentralized exchanges such as Uniswap\cite{Uniswap2020}.
+done by Maker \cite{MakerDAO2021}. However, this section will describe how to implement a lending application using liquidity pools as it builds the
+foundation for decentralized exchanges such as Uniswap \cite{Uniswap2020}.
 
 As described in section \ref{subsec:liquiditypools}, liquidity pools always need to have a pair of digital assets.
 As we are building on top of the Ethereum network, we are limited to Ether and Ethereum tokens. In this example, the liquidity pool holds Ether
-and an ERC20 token called CherryToken, as implemented in section \ref{sec:ERC20}. Besides the token reference \texttt{cherryToken}, the smart contract
+and an ERC20 token called \textit{CherryToken}, as implemented in section \ref{sec:ERC20}. Besides the token reference \texttt{cherryToken}, the smart contract
 needs to keep track of the owner, rewards that are ready to be distributed to the liquidity providers and a mapping where the balances of the liquidity providers
-are stored. In order to create a single measurement for the pool pair, a virtual liquidity token is being created. It can be calculated by multiplicating both assets
+are stored. In order to create a single measurement for the pool pair, a virtual liquidity token is being created. It can be calculated by multiplying both assets
 and computing the square root. Because dealing with floating point numbers is difficult in Solidity and this is a redundant information which can be calculated, it
-is done by the client and not directly on the blochain. This is a common practice to store only absolute necessary data directly on the blockchain in order to save
+is done by the client and not directly on the blockchain. This is a common practice to store only absolute necessary data directly on the blockchain in order to save
 memory space and gas fees.
 \begin{GenericCode}
 address private _owner;
@@ -144,7 +144,7 @@ uint256 private _availableRewards = 0;
 mapping(address => uint256) private _liquidityTokenBalances;
 \end{GenericCode}
 
-On Ethereum, not only Externally Owned Accounts (EOAs) can receive Ether. Smart Contracts are able to receive payments by adding the \texttt{payable} modifier
+On Ethereum, not only externally owned accounts (EOAs) can receive Ether. Smart contracts are able to receive payments by adding the \texttt{payable} modifier
 to a function. Most contracts have an empty payable function, called fallback function, to prevent the loss of Ether which is being sent to the contract
 without calling a specific function. The getter functions \texttt{getEthBalance}, \texttt{getCtnBalance}, \texttt{getAvailableRewards} and
 \texttt{getLiquidityTokenBalance} provide the frontend with necessary information to implement a good user experience and, again, to keep as much
@@ -182,7 +182,7 @@ function addLiquidity(uint256 ctnAmount, uint256 liquidityTokenAmount) public pa
 }
 \end{GenericCode}
 
-Removing liquidity from the pool means withdrawing the lended funds and receiving an additional reward proportional to the pool share.
+Removing liquidity from the pool means withdrawing the loaned funds and receiving an additional reward proportional to the pool share.
 As the reward calculation is quite computational intensive and Soldity is not good at managing divisions and percentages, the reward will be computed
 off-chain as well. Because this is not managed by the function \texttt{removeLiquidity} itself, there are quite a few \texttt{require} statements necessary,
 to detect potential errors. The rewards are created using the \texttt{mint} function from the token and paid out proportional to the share of liquidity holdings
@@ -214,7 +214,7 @@ This calculation can be either fixed or dynamically. On more sophisticated excha
 If the liquidity pool is very small, the fees are really high\footnote{up to 50\% and more}. As the pool gains more depth, the fees decrease into small fractions
 of percentages but never will be zero.
 
-All numeric asset representations are stored in wei, the smallest unit on the Ethereum Platform. One Ether is equivalent to one quintillion wei, which is a
+All numeric asset representations are stored in wei, the smallest unit on the Ethereum platform. One Ether is equivalent to one quintillion wei, which is a
 number with 19 digits.
 
 \begin{GenericCode}
@@ -254,7 +254,7 @@ built-in \texttt{transfer} function.
 \section{Testing Smart Contracts}
 Testing plays a crucial part in the development of decentralized applications. Once deployed, the smart contracts are immutable on the blockchain. Fixing bugs after the initial deployment can be expensive and tedious, as the affected smart contracts need to be re-deployed and might be incompatible with the previous version. When working with financial assets of other people, it is even more vital, to minimize the number of bugs. Therefore, most applications use one or more testing frameworks and use a three-phase deployment cycle, as described in more detail in section \ref{sec:deployment}.
 
-As a developer, you have the choice to write tests natively in Solidity, or using an arbitrary testing framework based on JavaScript. When working with Truffle, the testing framework Mocha\cite{Mocha} and the assertion library Chai\cite{Chai} are preinstalled as the default. All tests that are in the testing subdirectory, will be executed using the command \texttt{truffle test}.
+As a developer, you have the choice to write tests natively in Solidity, or using an arbitrary testing framework based on JavaScript. When working with Truffle, the testing framework Mocha \cite{Mocha} and the assertion library Chai \cite{Chai} are preinstalled as the default. All tests that are in the testing subdirectory, will be executed using the command \texttt{truffle test}.
 
 At the top of each test file, the artifacts of the used smart contracts, as well as Chai, need to be imported:
 \begin{JsCode}
@@ -308,7 +308,7 @@ describe('CherryPool deployment', async () => {
 \end{JsCode}
 
 \section{Connecting Smart Contracts to Web Applications}
-The connection between the web frontend and the smart contracts is done using the JavaScript framework Web3\cite{Web3}, which is maintained by the Ethereum core team. It contains a lot of useful utility functions as seen before such as \texttt{web3.eth.sendTransaction()} for making transaction or \texttt{web3.utils.fromWei()} to convert a number from wei into Ether.
+The connection between the web frontend and the smart contracts is done using the JavaScript framework Web3 \cite{Web3}, which is maintained by the Ethereum core team. It contains a lot of useful utility functions as seen before such as \texttt{web3.eth.sendTransaction()} for making transaction or \texttt{web3.utils.fromWei()} to convert a number from wei into Ether.
 
 When the user wants to connect to a wallet, Web3 needs to determine the network provider first. Once detected, a new instance of Web3 will be instantiated and is ready for use.
 
@@ -340,7 +340,7 @@ if (cherryPoolData) {
 }	
 \end{JsCode}
 
-After these steps, the API is ready to be used by any UI component. Smart contract functions can be invoked using \texttt{call()} or \texttt{send()}. The function \texttt{call()} is used if the function does not alter the state of the blockchain. A typical use case for that is retreiving an account balance:
+After these steps, the API is ready to be used by any UI component. Smart contract functions can be invoked using \texttt{call()} or \texttt{send()}. The function \texttt{call()} is used if the function does not alter the state of the blockchain. A typical use case for that is retrieving an account balance:
 
 \begin{JsCode}
 account.cherryToken.methods.balanceOf(account.address).call().then((ctnBalance: number) => {
@@ -362,6 +362,6 @@ account.cherryToken.methods.approve(
 \section{Smart Contract Deployment}
 \label{sec:deployment}
 
-A typical release cycle of a blockchain application consists of three testing environments. At first, the smart contracts will be deployed to a local blockchain such as Ganache\cite{Ganache}. That is the environment where most of the testing will take place. Once the application is quite stable, it will be migrated to a public test network. These networks provide more realistic conditions, as it behaves more like the main network. Assets on the test networks have no value, which is really difficult to implement in reality. In order to prevent a value increase, the test networks need to be redeployed from time to time.
+A typical release cycle of a blockchain application consists of three testing environments. At first, the smart contracts will be deployed to a local blockchain such as Ganache \cite{Ganache}. That is the environment where most of the testing will take place. Once the application is quite stable, it will be migrated to a public test network. These networks provide more realistic conditions, as it behaves more like the main network. Assets on the test networks have no value, which is really difficult to implement in reality. In order to prevent a value increase, the test networks need to be redeployed from time to time.
 
-The most important test networks on Ethereum are Ropsten, Kovan (using the Aura consensus protocol) and Rinkeby (using the Clique consensus protocol). These conensus protocols are specifically designed to prevent the creation of value, which is exactly the opposite what the conensus protocols Proof of Work and Proof of Stake are trying to achieve.
+The most important test networks on Ethereum are \textit{Ropsten}, \textit{Kovan} (using the Aura consensus protocol) and \textit{Rinkeby} (using the Clique consensus protocol). These consensus protocols are specifically designed to prevent the creation of value, which is exactly the opposite what the consensus protocols of proof-of-work and proof-of-stake are trying to achieve.
