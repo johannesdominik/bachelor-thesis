@@ -1,1 +1,9 @@
-# bachelor-thesis
+# Use Cases and Design of Web Applications in Decentralized Finance
+This thesis describes the major fields of applications of decentralized financial software. Each use case is described in detail, to create a profound
+understanding of the technical design and operation of each of them.
+
+It is split up in two major parts. The first part describes the financial use cases in a more abstract and high-level manner. The second part lays
+down a possible implementation design, based on a very specific example of a web application that implements those uses cases. While the reference
+implementation is written in Solidity, a high level programming language for writing smart contracts on the Ethereum blockchain, there is a slight
+focus on Bitcoin and other cryptocurrencies as well. A separate chapter is dedicated to discuss criticism and potential risks of this new financial
+ecosystem.
